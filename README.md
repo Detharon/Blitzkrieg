@@ -8,6 +8,8 @@ This is an attempt to keep it alive and maintained and perhaps expand upon in th
 > [!IMPORTANT]  
 > Right now, the project is in Polish only. I plan to add English language in the future.
 
+![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.gif)
+
 ## Project structure 
 
 Blitzkrieg is based on LibGDX and follows a basic structure of a multi-platform LibGDX project.
@@ -15,7 +17,3 @@ Blitzkrieg is based on LibGDX and follows a basic structure of a multi-platform 
 All logic resides in the **code** project, while the **desktop** one provides just a single window to launch it.
 The **desktop** project is responsible for creating the executable. I'll describe the complete process once this
 project has proper docs.
-
-
-
-
