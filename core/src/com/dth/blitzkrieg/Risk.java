@@ -38,7 +38,7 @@ public class Risk {
 		while(true) {
 			Move m = players.get(whichPlayer).getAi().makeMove();
 			makeMove(m);			
-			if (m.isLastMove())	break;
+			if (m.lastMove())	break;
 		}
 		
 		do {
@@ -115,11 +115,11 @@ public class Risk {
 		if (isGameOver()) return true;
 		
 		// Check for an empty move
-		if (move.getArmy() < 1) return true;
+		if (move.army() < 1) return true;
 		
-		Province fromProvince = provinces[move.getFrom()];
-		Province toProvince = provinces[move.getTo()];
-		int army = move.getArmy();
+		Province fromProvince = provinces[move.from()];
+		Province toProvince = provinces[move.to()];
+		int army = move.army();
 
 		
 		// Check if the move is deployment
