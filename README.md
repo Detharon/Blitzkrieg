@@ -1,0 +1,21 @@
+# Blitzkrieg
+
+Blitzkrieg is an old project of mine, made around 2014, that I made as a part of my master's degree related
+to comparison of search algorithms for choosing a move in a simple two-player game.
+
+This is an attempt to keep it alive and maintained and perhaps expand upon in the future.
+
+> [!IMPORTANT]  
+> Right now, the project is in Polish only. I plan to add English language in the future.
+
+## Project structure 
+
+Blitzkrieg is based on LibGDX and follows a basic structure of a multi-platform LibGDX project.
+
+All logic resides in the **code** project, while the **desktop** one provides just a single window to launch it.
+The **desktop** project is responsible for creating the executable. I'll describe the complete process once this
+project has proper docs.
+
+
+
+
