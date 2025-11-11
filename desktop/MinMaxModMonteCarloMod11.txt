@@ -1,2 +1,0 @@
-Poczatek gry. (29.10.2015 2:11)
-Gracz,Tura,Dochod,Czas
