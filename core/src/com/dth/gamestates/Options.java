@@ -18,315 +18,353 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.blitzkrieg.Blitzkrieg;
 import com.dth.blitzkrieg.RiskPreferences;
+import com.dth.managers.LanguageManager;
 import com.dth.managers.SoundManager;
 
 public class Options implements Screen {
-	private Blitzkrieg game;
-	
-	private Viewport viewport = new ScreenViewport();
-	private Stage stage = new Stage(viewport);
-		
-	private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
-			new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
-	
-	private RiskPreferences prefs;
-	
-	private Table table = new Table();
-	
-	// Player types
-	
-	public static final String[] PLAYER_TYPES = {"Pasywny", "Losowy", "Minimax", "MinimaxMod", "MonteCarlo", "MonteCarloMod"};
-	public static final int PLAYER_PASSIVE = 0;
-	public static final int PLAYER_RANDOM= 1;
-	public static final int PLAYER_MINMAX = 2;
-	public static final int PLAYER_MINMAX_MOD = 3;
-	public static final int PLAYER_MONTECARLO = 4;
-	public static final int PLAYER_MONTECARLO_MOD = 5;
-	
-	// Widgets	
-	private Label player1valueLabel, player2valueLabel;
-	private SelectBox<String> player1sb, player2sb;
-	private Slider player1slider, player2slider, neutralSlider;
-	private CheckBox historyCheckBox;
-	
-	public Options(Blitzkrieg game) {
-		this.game = game;
-		
-		prefs = game.getPreferences();
-	}
-	
-	@Override
-	public void show() {
-		table = new Table();
-		
-		Label optionLabel = new Label("Opcje", skin);
-		table.add(optionLabel).colspan(4);
-		
-		// First row (1st player)
-		
-		table.row().padTop(15).left();
-		
-		Label player1 = new Label("Gracz 1:", skin);
-		table.add(player1).padRight(15);
-		
-		player1sb = new SelectBox<String>(skin);
-		player1sb.setItems(PLAYER_TYPES);
-		player1sb.addListener(new ChangeListener(){
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				player1changed();
-			}
-		});
-		table.add(player1sb).left();
-		
-		player1valueLabel = new Label("", skin);
-		player1slider = new Slider(0f, 0f, 1f, false, skin);
-		player1slider.addListener(new ChangeListener(){
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				player1valueLabel.setText(Float.toString(player1slider.getValue()));
-			}
-		});
-		table.add(player1slider);
-		player1slider.setVisible(true);
-		
-		player1slider.setValue(0);
-		player1valueLabel.setText("2");
-		
-		table.add(player1valueLabel).padLeft(5).left().width(25);
-		
-		table.row().padTop(15);
-		
-		// Second row (2nd player)
-		
-		Label player2 = new Label("Gracz 2:", skin);
-		table.add(player2).padRight(15).left();		
-		
-		player2sb = new SelectBox<String>(skin);
-		player2sb.setItems(PLAYER_TYPES);
-		player2sb.addListener(new ChangeListener(){
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				player2changed();
-			}
-		});
-		table.add(player2sb).left();
-		
-		player2valueLabel = new Label("", skin);
-		player2slider = new Slider(0f, 0f, 1f, false, skin);
-		player2slider.addListener(new ChangeListener(){
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				player2valueLabel.setText(Float.toString(player2slider.getValue()));
-			}
-		});
-		table.add(player2slider);
-		player2slider.setVisible(true);
-		
-		player2slider.setValue(0);
-		player2valueLabel.setText("2");
-		
-		table.add(player2valueLabel).padLeft(5).left().width(25);
-		
-		table.row().padTop(15);
-		
-		// Third row (neutral armies)
-		
-		Label neutralLabel = new Label("Neutralne armie:", skin);
-		table.add(neutralLabel).padRight(15).left();
-		
-		final Label neutralValueLabel = new Label("", skin);
-		
-		neutralSlider = new Slider(0f, 10f, 1f, false, skin);
-		neutralSlider.addListener(new ChangeListener(){
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				neutralValueLabel.setText(Float.toString(neutralSlider.getValue()));
-			}
-		});
-		table.add(neutralSlider);
+    private final Blitzkrieg game;
 
-		neutralSlider.setValue(2);
-		neutralValueLabel.setText(Float.toString(neutralSlider.getValue()));
-		
-		table.add(neutralValueLabel).padLeft(5).width(25).left();
-		
-		table.row().padTop(15);
-		
-		final Label makeLogLabel = new Label("Zapisuj historię:", skin);
-		table.add(makeLogLabel).padRight(15).left();
-		
-		historyCheckBox = new CheckBox("", skin);
-		table.add(historyCheckBox).left();
-		
-		table.row().padTop(15);
-		
-		TextButton buttonSave = new TextButton("Zapisz zmiany", skin);
-		buttonSave.addListener(new ClickListener() {
-			@Override
-	        public void clicked(InputEvent event, float x, float y) {
-				saveButtonPressed();
-	        }
-		});
-		table.add(buttonSave).right().fill().padRight(15);
-		
-		TextButton buttonReturn = new TextButton("Powrót", skin);
-		buttonReturn.addListener(new ClickListener() {
-			@Override
-	        public void clicked(InputEvent event, float x, float y) {
-				SoundManager.play("click");
-				((Game)Gdx.app.getApplicationListener()).setScreen(new Menu(game));
-	        }
-		});
-		table.add(buttonReturn).right().fill();
-		
-		table.setFillParent(true);
-		stage.addActor(table);
-		Gdx.input.setInputProcessor(stage);
-		
-		loadOptions();
-	}
+    private Viewport viewport = new ScreenViewport();
+    private Stage stage = new Stage(viewport);
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		stage.act(delta);
-        stage.draw();
-	}
+    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
+	new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
-	@Override
-	public void resize(int width, int height) {
-		viewport.update(width, height, true);
-	}
+    private RiskPreferences prefs;
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-	}
+    private Table table = new Table();
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
+    // Player types
+    public static final String[] PLAYER_TYPES = {"Pasywny", "Losowy", "Minimax", "MinimaxMod", "MonteCarlo", "MonteCarloMod"};
+    public static final int PLAYER_PASSIVE = 0;
+    public static final int PLAYER_RANDOM = 1;
+    public static final int PLAYER_MINMAX = 2;
+    public static final int PLAYER_MINMAX_MOD = 3;
+    public static final int PLAYER_MONTECARLO = 4;
+    public static final int PLAYER_MONTECARLO_MOD = 5;
 
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-		
-	}
+    // Widgets
+    private Label player1valueLabel, player2valueLabel;
+    private SelectBox<String> player1sb, player2sb, languageSelector;
+    private Slider player1slider, player2slider, neutralSlider;
+    private CheckBox historyCheckBox;
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-	}
-	
-	// =========================
-	// Player changes
-	// =========================
-	
-	private void player1changed() {
-		if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
-			togglePlayer1Settings(false);
-		} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
-			togglePlayer1Settings(false);
-		} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX]) 
-				|| player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
-			togglePlayer1Settings(true);
-			player1slider.setRange(1, 8);
-			player1slider.setValue(4);
-			player1slider.setStepSize(1f);
-		} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
-				|| player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
-			togglePlayer1Settings(true);
-			player1slider.setRange(300, 10000);
-			player1slider.setValue(2000);
-			player1slider.setStepSize(100f);
-		}
-	}
-	
-	private void player2changed() {
-		if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
-			togglePlayer2Settings(false);
-		} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
-			togglePlayer2Settings(false);
-		} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX])
-			|| player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
-			togglePlayer2Settings(true);
-			player2slider.setRange(1, 8);
-			player2slider.setValue(4);
-			player2slider.setStepSize(1f);
-		} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
-				|| player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
-			togglePlayer2Settings(true);
-			player2slider.setRange(300, 10000);
-			player2slider.setValue(2000);
-			player2slider.setStepSize(100f);
-		} 
-	}
-	
-	// =========================
-	// Button presses
-	// =========================
-	
-	private void saveButtonPressed() {
-		SoundManager.play("click");
-		
-		game.getPreferences().setPlayer1(player1sb.getSelected());
-		game.getPreferences().setPlayer1Setting((int)player1slider.getValue());
-		
-		game.getPreferences().setPlayer2(player2sb.getSelected());
-		game.getPreferences().setPlayer2Setting((int)player2slider.getValue());
-		
-		game.getPreferences().setNeutrals((int)neutralSlider.getValue());
-		
-		game.getPreferences().setLogging(historyCheckBox.isChecked());
-		
-		Dialog d = new Dialog("Sukces", skin)  {
-		    public void result(Object obj) {
-		        remove();
-		    }
-		};
-		d.text("Pomylsnie zapisano zmiany.");
-		d.button("Ok", true);
-		
-		d.setWidth(275);
-		d.setX(Gdx.graphics.getWidth() / 2 - d.getWidth() / 2);
-		d.setY(Gdx.graphics.getHeight() / 2 - d.getHeight() / 2);
-		
-		stage.addActor(d);
-	}
-	
-	// =========================
-	// Helper functions
-	// =========================
-	
-	private void loadOptions() {
-		player1sb.setSelected(prefs.getPlayer1());
+    // Labels that can change when the language changes
+    private Label optionLabel, player1Label, player2Label;
+    private Label neutralLabel, makeLogLabel, languageLabel;
+
+    // Buttons that can change when the language changes
+    private TextButton buttonSave, buttonReturn;
+
+    // Localization
+    private final LanguageManager languageManager = new LanguageManager();
+    private I18NBundle localization;
+
+    public Options(Blitzkrieg game) {
+	this.game = game;
+	this.prefs = game.getPreferences();
+	this.localization = languageManager.loadBundle(prefs.getLanguage());
+    }
+
+    @Override
+    public void show() {
+	table = new Table();
+
+	optionLabel = new Label(localization.get("options"), skin);
+	table.add(optionLabel).colspan(4);
+
+	// First row (1st player)
+
+	table.row().padTop(15).left();
+
+	player1Label = new Label(localization.format("player", "1"), skin);
+	table.add(player1Label).padRight(15);
+
+	player1sb = new SelectBox<>(skin);
+	player1sb.setItems(PLAYER_TYPES);
+	player1sb.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
 		player1changed();
-		player1slider.setValue(prefs.getPlayer1Setting());
-		
-		player2sb.setSelected(prefs.getPlayer2());
+	    }
+	});
+	table.add(player1sb).left();
+
+	player1valueLabel = new Label("", skin);
+	player1slider = new Slider(0f, 0f, 1f, false, skin);
+	player1slider.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
+		player1valueLabel.setText(Float.toString(player1slider.getValue()));
+	    }
+	});
+	table.add(player1slider);
+	player1slider.setVisible(true);
+
+	player1slider.setValue(0);
+	player1valueLabel.setText("2");
+
+	table.add(player1valueLabel).padLeft(5).left().width(25);
+
+	table.row().padTop(15);
+
+	// Second row (2nd player)
+
+	player2Label = new Label(localization.format("player", "2"), skin);
+	table.add(player2Label).padRight(15).left();
+
+	player2sb = new SelectBox<>(skin);
+	player2sb.setItems(PLAYER_TYPES);
+	player2sb.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
 		player2changed();
-		player2slider.setValue(prefs.getPlayer2Setting());
-		
-		neutralSlider.setValue(prefs.getNeutrals());
-		historyCheckBox.setChecked(prefs.isLogging());
+	    }
+	});
+	table.add(player2sb).left();
+
+	player2valueLabel = new Label("", skin);
+	player2slider = new Slider(0f, 0f, 1f, false, skin);
+	player2slider.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
+		player2valueLabel.setText(Float.toString(player2slider.getValue()));
+	    }
+	});
+	table.add(player2slider);
+	player2slider.setVisible(true);
+
+	player2slider.setValue(0);
+	player2valueLabel.setText("2");
+
+	table.add(player2valueLabel).padLeft(5).left().width(25);
+
+	table.row().padTop(15);
+
+	// Third row (neutral armies)
+	neutralLabel = new Label(localization.get("neutralArmies") + ":", skin);
+	table.add(neutralLabel).padRight(15).left();
+
+	final Label neutralValueLabel = new Label("", skin);
+
+	neutralSlider = new Slider(0f, 10f, 1f, false, skin);
+	neutralSlider.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
+		neutralValueLabel.setText(Float.toString(neutralSlider.getValue()));
+	    }
+	});
+	table.add(neutralSlider);
+
+	neutralSlider.setValue(2);
+	neutralValueLabel.setText(Float.toString(neutralSlider.getValue()));
+
+	table.add(neutralValueLabel).padLeft(5).width(25).left();
+
+	table.row().padTop(15);
+
+	makeLogLabel = new Label(localization.get("saveHistory") + ":", skin);
+	table.add(makeLogLabel).padRight(15).left();
+
+	historyCheckBox = new CheckBox("", skin);
+	table.add(historyCheckBox).left();
+
+	table.row().padTop(15);
+
+	languageLabel = new Label(localization.get("language") + ":", skin);
+	table.add(languageLabel).padRight(15).left();
+	languageSelector = new SelectBox<>(skin);
+	languageSelector.setItems(LanguageManager.LANGUAGES);
+	languageSelector.addListener(new ChangeListener() {
+	    @Override
+	    public void changed(ChangeEvent event, Actor actor) {
+		languageChanged();
+	    }
+	});
+	table.add(languageSelector).left();
+	table.row().padTop(15);
+
+	buttonSave = new TextButton(localization.get("saveChanges"), skin);
+	buttonSave.addListener(new ClickListener() {
+	    @Override
+	    public void clicked(InputEvent event, float x, float y) {
+		saveButtonPressed();
+	    }
+	});
+	table.add(buttonSave).right().fill().padRight(15);
+
+	buttonReturn = new TextButton(localization.get("back"), skin);
+	buttonReturn.addListener(new ClickListener() {
+	    @Override
+	    public void clicked(InputEvent event, float x, float y) {
+		SoundManager.play("click");
+		((Game) Gdx.app.getApplicationListener()).setScreen(new Menu(game));
+	    }
+	});
+	table.add(buttonReturn).right().fill();
+
+	table.setFillParent(true);
+	stage.addActor(table);
+	Gdx.input.setInputProcessor(stage);
+
+	loadOptions();
+    }
+
+    @Override
+    public void render(float delta) {
+	Gdx.gl.glClearColor(0, 0, 0, 1);
+	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+	stage.act(delta);
+	stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+	viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+	// TODO Auto-generated method stub
+    }
+
+    @Override
+    public void resume() {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void hide() {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void dispose() {
+	// TODO Auto-generated method stub
+    }
+
+    // =========================
+    // Player changes
+    // =========================
+
+    private void player1changed() {
+	if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
+	    togglePlayer1Settings(false);
+	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
+	    togglePlayer1Settings(false);
+	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX])
+	    || player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
+	    togglePlayer1Settings(true);
+	    player1slider.setRange(1, 8);
+	    player1slider.setValue(4);
+	    player1slider.setStepSize(1f);
+	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
+	    || player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
+	    togglePlayer1Settings(true);
+	    player1slider.setRange(300, 10000);
+	    player1slider.setValue(2000);
+	    player1slider.setStepSize(100f);
 	}
-	
-	private void togglePlayer1Settings(boolean show) {
-		player1valueLabel.setVisible(show);
-		player1slider.setVisible(show);
+    }
+
+    private void player2changed() {
+	if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
+	    togglePlayer2Settings(false);
+	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
+	    togglePlayer2Settings(false);
+	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX])
+	    || player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
+	    togglePlayer2Settings(true);
+	    player2slider.setRange(1, 8);
+	    player2slider.setValue(4);
+	    player2slider.setStepSize(1f);
+	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
+	    || player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
+	    togglePlayer2Settings(true);
+	    player2slider.setRange(300, 10000);
+	    player2slider.setValue(2000);
+	    player2slider.setStepSize(100f);
 	}
-	
-	private void togglePlayer2Settings(boolean show) {
-		player2valueLabel.setVisible(show);
-		player2slider.setVisible(show);
-	}
+    }
+
+    // =========================
+    // Button presses
+    // =========================
+
+    private void languageChanged() {
+	localization = languageManager.loadBundle(languageSelector.getSelected());
+	optionLabel.setText(localization.get("options"));
+	player1Label.setText(localization.format("player", "1"));
+	player2Label.setText(localization.format("player", "2"));
+	neutralLabel.setText(localization.get("neutralArmies") + ":");
+	makeLogLabel.setText(localization.get("saveHistory") + ":");
+	languageLabel.setText(localization.get("language") + ":");
+	buttonSave.setText(localization.get("saveChanges"));
+	buttonReturn.setText(localization.get("back"));
+    }
+
+    private void saveButtonPressed() {
+	SoundManager.play("click");
+
+	game.getPreferences().setPlayer1(player1sb.getSelected());
+	game.getPreferences().setPlayer1Setting((int) player1slider.getValue());
+
+	game.getPreferences().setPlayer2(player2sb.getSelected());
+	game.getPreferences().setPlayer2Setting((int) player2slider.getValue());
+
+	game.getPreferences().setNeutrals((int) neutralSlider.getValue());
+
+	game.getPreferences().setLogging(historyCheckBox.isChecked());
+	game.getPreferences().setLanguage(languageSelector.getSelected());
+
+	Dialog d = new Dialog(localization.get("success"), skin) {
+	    public void result(Object obj) {
+		remove();
+	    }
+	};
+	d.text(localization.get("changesSaved"));
+	d.button("Ok", true);
+
+	d.setWidth(275);
+	d.setX(Gdx.graphics.getWidth() / 2 - d.getWidth() / 2);
+	d.setY(Gdx.graphics.getHeight() / 2 - d.getHeight() / 2);
+
+	stage.addActor(d);
+    }
+
+    // =========================
+    // Helper functions
+    // =========================
+
+    private void loadOptions() {
+	player1sb.setSelected(prefs.getPlayer1());
+	player1changed();
+	player1slider.setValue(prefs.getPlayer1Setting());
+
+	player2sb.setSelected(prefs.getPlayer2());
+	player2changed();
+	player2slider.setValue(prefs.getPlayer2Setting());
+
+	neutralSlider.setValue(prefs.getNeutrals());
+	historyCheckBox.setChecked(prefs.isLogging());
+	languageSelector.setSelected(prefs.getLanguage());
+    }
+
+    private void togglePlayer1Settings(boolean show) {
+	player1valueLabel.setVisible(show);
+	player1slider.setVisible(show);
+    }
+
+    private void togglePlayer2Settings(boolean show) {
+	player2valueLabel.setVisible(show);
+	player2slider.setVisible(show);
+    }
 }
