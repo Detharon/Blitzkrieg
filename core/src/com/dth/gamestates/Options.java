@@ -26,6 +26,8 @@ import com.dth.blitzkrieg.RiskPreferences;
 import com.dth.managers.LanguageManager;
 import com.dth.managers.SoundManager;
 
+import java.util.function.Consumer;
+
 public class Options implements Screen {
     private final Blitzkrieg game;
 
@@ -90,7 +92,7 @@ public class Options implements Screen {
 	player1sb.addListener(new ChangeListener() {
 	    @Override
 	    public void changed(ChangeEvent event, Actor actor) {
-		player1changed();
+		player1Changed();
 	    }
 	});
 	table.add(player1sb).left();
@@ -123,7 +125,7 @@ public class Options implements Screen {
 	player2sb.addListener(new ChangeListener() {
 	    @Override
 	    public void changed(ChangeEvent event, Actor actor) {
-		player2changed();
+		player2Changed();
 	    }
 	});
 	table.add(player2sb).left();
@@ -255,44 +257,34 @@ public class Options implements Screen {
     // Player changes
     // =========================
 
-    private void player1changed() {
-	if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
-	    togglePlayer1Settings(false);
-	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
-	    togglePlayer1Settings(false);
-	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX])
-	    || player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
-	    togglePlayer1Settings(true);
-	    player1slider.setRange(1, 8);
-	    player1slider.setValue(4);
-	    player1slider.setStepSize(1f);
-	} else if (player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
-	    || player1sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
-	    togglePlayer1Settings(true);
-	    player1slider.setRange(300, 10000);
-	    player1slider.setValue(2000);
-	    player1slider.setStepSize(100f);
+    private void player1Changed() {
+	playerChanged(player1sb, player1slider, this::showPlayer1Settings);
+    }
+
+    private void player2Changed() {
+	playerChanged(player2sb, player2slider, this::showPlayer2Settings);
+    }
+
+    private void playerChanged(SelectBox<String> playerSelectBox, Slider playerSlider, Consumer<Boolean> showPlayer) {
+	switch (playerSelectBox.getSelectedIndex()) {
+	    case PLAYER_PASSIVE, PLAYER_RANDOM -> showPlayer.accept(false);
+	    case PLAYER_MINMAX, PLAYER_MINMAX_MOD -> minMaxPlayerSelected(playerSlider, showPlayer);
+	    case PLAYER_MONTECARLO, PLAYER_MONTECARLO_MOD -> monteCarloPlayerSelected(playerSlider, showPlayer);
 	}
     }
 
-    private void player2changed() {
-	if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_PASSIVE])) {
-	    togglePlayer2Settings(false);
-	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_RANDOM])) {
-	    togglePlayer2Settings(false);
-	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX])
-	    || player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MINMAX_MOD])) {
-	    togglePlayer2Settings(true);
-	    player2slider.setRange(1, 8);
-	    player2slider.setValue(4);
-	    player2slider.setStepSize(1f);
-	} else if (player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO])
-	    || player2sb.getSelected().equals(PLAYER_TYPES[PLAYER_MONTECARLO_MOD])) {
-	    togglePlayer2Settings(true);
-	    player2slider.setRange(300, 10000);
-	    player2slider.setValue(2000);
-	    player2slider.setStepSize(100f);
-	}
+    private void minMaxPlayerSelected(Slider playerSlider, Consumer<Boolean> showPlayer) {
+	showPlayer.accept(true);
+	playerSlider.setRange(1, 8);
+	playerSlider.setValue(4);
+	playerSlider.setStepSize(1f);
+    }
+
+    private void monteCarloPlayerSelected(Slider playerSlider, Consumer<Boolean> showPlayer) {
+	showPlayer.accept(true);
+	playerSlider.setRange(300, 10000);
+	playerSlider.setValue(2000);
+	playerSlider.setStepSize(100f);
     }
 
     // =========================
@@ -346,11 +338,11 @@ public class Options implements Screen {
 
     private void loadOptions() {
 	player1sb.setSelected(prefs.getPlayer1());
-	player1changed();
+	player1Changed();
 	player1slider.setValue(prefs.getPlayer1Setting());
 
 	player2sb.setSelected(prefs.getPlayer2());
-	player2changed();
+	player2Changed();
 	player2slider.setValue(prefs.getPlayer2Setting());
 
 	neutralSlider.setValue(prefs.getNeutrals());
@@ -358,12 +350,12 @@ public class Options implements Screen {
 	languageSelector.setSelected(prefs.getLanguage());
     }
 
-    private void togglePlayer1Settings(boolean show) {
+    private void showPlayer1Settings(boolean show) {
 	player1valueLabel.setVisible(show);
 	player1slider.setVisible(show);
     }
 
-    private void togglePlayer2Settings(boolean show) {
+    private void showPlayer2Settings(boolean show) {
 	player2valueLabel.setVisible(show);
 	player2slider.setVisible(show);
     }
