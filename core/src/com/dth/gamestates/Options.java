@@ -42,7 +42,7 @@ public class Options implements Screen {
     private Table table = new Table();
 
     // Player types
-    public static final String[] PLAYER_TYPES = {"Pasywny", "Losowy", "Minimax", "MinimaxMod", "MonteCarlo", "MonteCarloMod"};
+    public String[] playerTypes;
     public static final int PLAYER_PASSIVE = 0;
     public static final int PLAYER_RANDOM = 1;
     public static final int PLAYER_MINMAX = 2;
@@ -71,6 +71,7 @@ public class Options implements Screen {
 	this.game = game;
 	this.prefs = game.getPreferences();
 	this.localization = languageManager.loadBundle(prefs.getLanguage());
+	setPlayerTypes();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class Options implements Screen {
 	table.add(player1Label).padRight(15);
 
 	player1sb = new SelectBox<>(skin);
-	player1sb.setItems(PLAYER_TYPES);
+	player1sb.setItems(playerTypes);
 	player1sb.addListener(new ChangeListener() {
 	    @Override
 	    public void changed(ChangeEvent event, Actor actor) {
@@ -121,7 +122,7 @@ public class Options implements Screen {
 	table.add(player2Label).padRight(15).left();
 
 	player2sb = new SelectBox<>(skin);
-	player2sb.setItems(PLAYER_TYPES);
+	player2sb.setItems(playerTypes);
 	player2sb.addListener(new ChangeListener() {
 	    @Override
 	    public void changed(ChangeEvent event, Actor actor) {
@@ -301,6 +302,14 @@ public class Options implements Screen {
 	languageLabel.setText(localization.get("language") + ":");
 	buttonSave.setText(localization.get("saveChanges"));
 	buttonReturn.setText(localization.get("back"));
+
+	setPlayerTypes();
+	int selectedPlayer1 = player1sb.getSelectedIndex();
+	player1sb.setItems(playerTypes);
+	player1sb.setSelectedIndex(selectedPlayer1);
+	int selectedPlayer2 = player2sb.getSelectedIndex();
+	player2sb.setItems(playerTypes);
+	player2sb.setSelectedIndex(selectedPlayer2);
     }
 
     private void saveButtonPressed() {
@@ -335,6 +344,17 @@ public class Options implements Screen {
     // =========================
     // Helper functions
     // =========================
+
+    private void setPlayerTypes() {
+	this.playerTypes = new String[]{
+	    localization.get("passive"),
+	    localization.get("random"),
+	    localization.get("minMax"),
+	    localization.get("minMaxMod"),
+	    localization.get("monteCarlo"),
+	    localization.get("monteCarloMod")
+	};
+    }
 
     private void loadOptions() {
 	player1sb.setSelected(prefs.getPlayer1());
