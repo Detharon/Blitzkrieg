@@ -13,87 +13,91 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.blitzkrieg.Blitzkrieg;
+import com.dth.managers.LanguageManager;
 import com.dth.managers.SoundManager;
 
-public class About implements Screen{
-	private Viewport viewport = new ScreenViewport();
-	private Stage stage = new Stage(viewport);
-	private Table table = new Table();
-	private Blitzkrieg game;
-	
-	private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
-			new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
-	
-	public About(Blitzkrieg game) {
-		this.game = game;
-	}
-	
-	@Override
-	public void show() {
-		Window window = new Window("O programie", skin);
+public class About implements Screen {
+    private Viewport viewport = new ScreenViewport();
+    private Stage stage = new Stage(viewport);
+    private Table table = new Table();
+    private Blitzkrieg game;
 
-		String text = "Program napisany w ramach pracy \"Analiza algorytmow sztucznej inteligencji dla gry typu Risk\"."
-				+ ""
-				+ "\n\nAutor: Piotr Strąk"
-				+ "\nPromotor: dr Przemysław Juszczuk"
-				+ "";		
-		Label label = new Label(text, skin);
-		label.setWrap(true);
-		window.add(label).width(350).row();
-				
-		TextButton buttonExit = new TextButton("Powrót", skin);
-		buttonExit.addListener(new ClickListener() {
-			@Override
-	        public void clicked(InputEvent event, float x, float y) {
-				SoundManager.play("click");
-				((Game)Gdx.app.getApplicationListener()).setScreen(new Menu(game));
-	        }
-		});
-		window.add(buttonExit).row();
-		
-		table.add(window).row();
-		table.setFillParent(true);	
-		stage.addActor(table);
-		Gdx.input.setInputProcessor(stage);
-	}
+    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
+	new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		stage.act(delta);
-        stage.draw();
-	}
+    private final I18NBundle localization;
 
-	@Override
-	public void resize(int width, int height) {
-		viewport.update(width, height, true);
-	}
+    public About(Blitzkrieg game) {
+	this.game = game;
+	var preferences = game.getPreferences();
+	this.localization = new LanguageManager().loadBundle(preferences.getLanguage());
+    }
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void show() {
+	Window window = new Window(localization.get("aboutApp"), skin);
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		
-	}
+	String text = localization.get("appPurpose")
+	    + ".\n\n" + localization.format("author", "Piotr Strąk")
+	    + "\n" + localization.format("supervisor", "dr Przemysław Juszczuk");
+	Label label = new Label(text, skin);
+	label.setWrap(true);
+	window.add(label).width(350).row();
 
-	@Override
-	public void hide() {
-		// TODO Auto-generated method stub
-		
-	}
+	TextButton buttonExit = new TextButton(localization.get("back"), skin);
+	buttonExit.addListener(new ClickListener() {
+	    @Override
+	    public void clicked(InputEvent event, float x, float y) {
+		SoundManager.play("click");
+		((Game) Gdx.app.getApplicationListener()).setScreen(new Menu(game));
+	    }
+	});
+	window.add(buttonExit).row();
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-	}
+	table.add(window).row();
+	table.setFillParent(true);
+	stage.addActor(table);
+	Gdx.input.setInputProcessor(stage);
+    }
+
+    @Override
+    public void render(float delta) {
+	Gdx.gl.glClearColor(0, 0, 0, 1);
+	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+	stage.act(delta);
+	stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+	viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void resume() {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void hide() {
+	// TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void dispose() {
+	// TODO Auto-generated method stub
+    }
 }
