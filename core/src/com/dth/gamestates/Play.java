@@ -29,12 +29,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.actors.MapRegion;
 import com.dth.actors.RegionNumber;
-import com.dth.algorithm.DefaultMoveGenerator;
-import com.dth.algorithm.MinMaxPlayer;
-import com.dth.algorithm.MonteCarloPlayer;
-import com.dth.algorithm.PassivePlayer;
-import com.dth.algorithm.RandomPlayer;
-import com.dth.algorithm.RandomPlayout;
+import com.dth.algorithm.*;
 import com.dth.blitzkrieg.Blitzkrieg;
 import com.dth.blitzkrieg.ContinentIncome;
 import com.dth.blitzkrieg.DefaultBorderSetter;
@@ -56,8 +51,7 @@ public class Play implements Screen {
     private final Blitzkrieg game;
     private final I18NBundle localization;
 
-    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
-	new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
+    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
     private MapRegion[] regions = new MapRegion[42];
     private RegionNumber[] armies = new RegionNumber[42];
@@ -106,7 +100,7 @@ public class Play implements Screen {
 	stage.addActor(regions[2]);
 	regions[3] = new MapRegion(manager.get("map/eu4.png"), 3, MapRegion.EUROPE, 47, 44);
 	stage.addActor(regions[3]);
-	regions[4] = new MapRegion( manager.get("map/eu5.png"), 4, MapRegion.EUROPE, 57, 88);
+	regions[4] = new MapRegion(manager.get("map/eu5.png"), 4, MapRegion.EUROPE, 57, 88);
 	stage.addActor(regions[4]);
 	regions[5] = new MapRegion(manager.get("map/eu6.png"), 5, MapRegion.EUROPE, 58, -1);
 	stage.addActor(regions[5]);
@@ -115,7 +109,7 @@ public class Play implements Screen {
 
 	regions[7] = new MapRegion(manager.get("map/as1.png"), 7, MapRegion.ASIA, 134, -106);
 	stage.addActor(regions[7]);
-	regions[8] = new MapRegion( manager.get("map/as2.png"), 8, MapRegion.ASIA, 226, 49);
+	regions[8] = new MapRegion(manager.get("map/as2.png"), 8, MapRegion.ASIA, 226, 49);
 	stage.addActor(regions[8]);
 	regions[9] = new MapRegion(manager.get("map/as3.png"), 9, MapRegion.ASIA, 208, 0);
 	stage.addActor(regions[9]);
@@ -304,25 +298,16 @@ public class Play implements Screen {
 	wt.pad(10).left().padTop(20);
 
 	// Player 1
-
-	String name = game.getPreferences().getPlayer1();
-	if (name == "") name = "Losowy";
-
-	Label p1 = new Label(name, skin);
+	Label p1 = new Label(playerIdToName(game.getPreferences().getPlayer1()), skin);
 	p1.setColor(ownerToColor.get(1));
 	wt.add(p1).left().padRight(10);
 
 	score1 = new Label(String.valueOf(risk.getPlayer(1).getIncome()), skin);
 	wt.add(score1);
-
 	wt.row();
 
 	// Player 2
-
-	name = game.getPreferences().getPlayer2();
-	if (name == "") name = "Losowy";
-
-	Label p2 = new Label(name, skin);
+	Label p2 = new Label(playerIdToName(game.getPreferences().getPlayer2()), skin);
 	p2.setColor(ownerToColor.get(2));
 	wt.add(p2).left().padRight(10);
 
@@ -332,6 +317,17 @@ public class Play implements Screen {
 	wt.row();
 	wt.setFillParent(true);
 	w.addActor(wt);
+    }
+
+    private String playerIdToName(int id) {
+	return switch (id) {
+	    case 1 -> localization.get("random");
+	    case 2 -> localization.get("minMax");
+	    case 3 -> localization.get("minMaxMod");
+	    case 4 -> localization.get("monteCarlo");
+	    case 5 -> localization.get("monteCarloMod");
+	    default -> localization.get("passive");
+	};
     }
 
     private void refresh() {
@@ -347,10 +343,10 @@ public class Play implements Screen {
     }
 
     private void refreshHud() {
-	if (!game.getPreferences().getPlayer1().equals("Brak"))
-	    score1.setText(String.valueOf(risk.getPlayer(1).getIncome()));
-	if (!game.getPreferences().getPlayer2().equals("Brak"))
-	    score2.setText(String.valueOf(risk.getPlayer(2).getIncome()));
+	// if (!game.getPreferences().getPlayer1().equals("Brak"))
+	score1.setText(String.valueOf(risk.getPlayer(1).getIncome()));
+	// if (!game.getPreferences().getPlayer2().equals("Brak"))
+	score2.setText(String.valueOf(risk.getPlayer(2).getIncome()));
     }
 
     private void checkForEnd() {
@@ -438,7 +434,7 @@ public class Play implements Screen {
 
 	risk.addPlayer(new Player(0, 0, null));
 
-	String[] playerTypes = new String[2];
+	int[] playerTypes = new int[2];
 	playerTypes[0] = game.getPreferences().getPlayer1();
 	playerTypes[1] = game.getPreferences().getPlayer2();
 
@@ -446,31 +442,21 @@ public class Play implements Screen {
 	playerSettings[0] = game.getPreferences().getPlayer1Setting();
 	playerSettings[1] = game.getPreferences().getPlayer2Setting();
 
-	if (playerTypes[0] == "") {
-	    playerTypes[0] = "Losowy";
-	}
-
-	if (playerTypes[1] == "") {
-	    playerTypes[1] = "Losowy";
-	}
-
 	for (int i = 0; i < playerTypes.length; i++) {
-	    String playerType = playerTypes[i];
+	    int playerType = playerTypes[i];
 	    int playerSetting = playerSettings[i];
+	    var moveGenerator = new DefaultMoveGenerator();
 
-	    if (playerType.equals("Pasywny")) {
-		risk.addPlayer(new Player(i + 1, 3, new PassivePlayer(risk, i + 1)));
-	    } else if (playerType.equals("Losowy")) {
-		risk.addPlayer(new Player(i + 1, 3, new RandomPlayer(risk, i + 1)));
-	    } else if (playerType.equals("Minimax")) {
-		risk.addPlayer(new Player(i + 1, 3, new MinMaxPlayer(new DefaultMoveGenerator(), risk, i + 1, playerSetting - 1, false)));
-	    } else if (playerType.equals("MinimaxMod")) {
-		risk.addPlayer(new Player(i + 1, 3, new MinMaxPlayer(new DefaultMoveGenerator(), risk, i + 1, playerSetting - 1, true)));
-	    } else if (playerType.equals("MonteCarlo")) {
-		risk.addPlayer(new Player(i + 1, 3, new MonteCarloPlayer(new DefaultMoveGenerator(), new RandomPlayout(), risk, i + 1, playerSetting, false)));
-	    } else if (playerType.equals("MonteCarloMod")) {
-		risk.addPlayer(new Player(i + 1, 3, new MonteCarloPlayer(new DefaultMoveGenerator(), new RandomPlayout(), risk, i + 1, playerSetting, true)));
-	    }
+	    ArtificialPlayer ai = switch (playerType) {
+		case 1 -> new RandomPlayer(risk, i + 1);
+		case 2 -> new MinMaxPlayer(moveGenerator, risk, i + 1, playerSetting - 1, false);
+		case 3 -> new MinMaxPlayer(moveGenerator, risk, i + 1, playerSetting - 1, true);
+		case 4 -> new MonteCarloPlayer(moveGenerator, new RandomPlayout(), risk, i + 1, playerSetting, false);
+		case 5 -> new MonteCarloPlayer(moveGenerator, new RandomPlayout(), risk, i + 1, playerSetting, true);
+		default -> new PassivePlayer(risk, i + 1);
+	    };
+
+	    risk.addPlayer(new Player(i + 1, 3, ai));
 	}
 
 	// Add regions to players
@@ -484,11 +470,11 @@ public class Play implements Screen {
 	// Initialize counters
 
 	turns = new int[risk.getPlayers().size() - 1];
-	times = new ArrayList<ArrayList<Long>>();
+	times = new ArrayList<>();
 
 	for (int i = 0; i < risk.getPlayers().size() - 1; i++) {
 	    turns[i] = 0;
-	    times.add(new ArrayList<Long>(100));
+	    times.add(new ArrayList<>(100));
 	}
 
 	// Create and initialize logger
@@ -662,8 +648,7 @@ public class Play implements Screen {
     }
 
     private void stopButtonClicked() {
-	if (gameThread != null)
-	    gameThread.interrupt();
+	if (gameThread != null) gameThread.interrupt();
     }
 
 }

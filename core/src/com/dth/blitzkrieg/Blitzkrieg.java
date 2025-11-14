@@ -21,7 +21,6 @@ public class Blitzkrieg extends Game {
 
 	@Override
 	public void create() {
-		
 		setScreen(new Menu(this));
 		
 		loadSounds();

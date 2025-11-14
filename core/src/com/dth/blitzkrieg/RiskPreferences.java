@@ -22,21 +22,21 @@ public class RiskPreferences {
 	return Gdx.app.getPreferences(PREFS_NAME);
     }
 
-    public String getPlayer1() {
-	return getPrefs().getString(PREF_PLAYER1);
+    public int getPlayer1() {
+	return getPrefs().getInteger(PREF_PLAYER1);
     }
 
-    public void setPlayer1(String player1) {
-	getPrefs().putString(PREF_PLAYER1, player1);
+    public void setPlayer1(int player1) {
+	getPrefs().putInteger(PREF_PLAYER1, player1);
 	getPrefs().flush();
     }
 
-    public String getPlayer2() {
-	return getPrefs().getString(PREF_PLAYER2);
+    public int getPlayer2() {
+	return getPrefs().getInteger(PREF_PLAYER2);
     }
 
-    public void setPlayer2(String player2) {
-	getPrefs().putString(PREF_PLAYER2, player2);
+    public void setPlayer2(int player2) {
+	getPrefs().putInteger(PREF_PLAYER2, player2);
 	getPrefs().flush();
     }
 

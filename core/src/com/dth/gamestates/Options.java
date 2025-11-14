@@ -315,10 +315,10 @@ public class Options implements Screen {
     private void saveButtonPressed() {
 	SoundManager.play("click");
 
-	game.getPreferences().setPlayer1(player1sb.getSelected());
+	game.getPreferences().setPlayer1(player1sb.getSelectedIndex());
 	game.getPreferences().setPlayer1Setting((int) player1slider.getValue());
 
-	game.getPreferences().setPlayer2(player2sb.getSelected());
+	game.getPreferences().setPlayer2(player2sb.getSelectedIndex());
 	game.getPreferences().setPlayer2Setting((int) player2slider.getValue());
 
 	game.getPreferences().setNeutrals((int) neutralSlider.getValue());
@@ -357,11 +357,11 @@ public class Options implements Screen {
     }
 
     private void loadOptions() {
-	player1sb.setSelected(prefs.getPlayer1());
+	player1sb.setSelectedIndex(prefs.getPlayer1());
 	player1Changed();
 	player1slider.setValue(prefs.getPlayer1Setting());
 
-	player2sb.setSelected(prefs.getPlayer2());
+	player2sb.setSelectedIndex(prefs.getPlayer2());
 	player2Changed();
 	player2slider.setValue(prefs.getPlayer2Setting());
 
