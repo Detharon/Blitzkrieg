@@ -50,52 +50,51 @@ public class Menu implements Screen {
 	Gdx.input.setInputProcessor(stage);
     }
 
-    private TextButton playButton() {
-	TextButton playButton = new TextButton(localization.get("newGame"), skin);
-	playButton.addListener(new ClickListener() {
+    private TextButton clickableButton(String buttonName, Runnable action) {
+	TextButton button = new TextButton(buttonName, skin);
+	button.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
-		((Game) Gdx.app.getApplicationListener()).setScreen(new Play(game));
+		action.run();
 	    }
 	});
-	return playButton;
+	return button;
+    }
+
+    private TextButton newScreenButton(String buttonName, Screen screen) {
+	return clickableButton(
+	    buttonName,
+	    () -> ((Game) Gdx.app.getApplicationListener()).setScreen(screen)
+	);
+    }
+
+    private TextButton playButton() {
+	return newScreenButton(
+	    localization.get("newGame"),
+	    new Play(game)
+	);
     }
 
     private TextButton optionsButton() {
-	TextButton optionsButton = new TextButton(localization.get("options"), skin);
-	optionsButton.addListener(new ClickListener() {
-	    @Override
-	    public void clicked(InputEvent event, float x, float y) {
-		SoundManager.play("click");
-		((Game) Gdx.app.getApplicationListener()).setScreen(new Options(game));
-	    }
-	});
-	return optionsButton;
+	return newScreenButton(
+	    localization.get("options"),
+	    new Options(game)
+	);
     }
 
     private TextButton aboutButton() {
-	TextButton aboutButton = new TextButton(localization.get("aboutApp"), skin);
-	aboutButton.addListener(new ClickListener() {
-	    @Override
-	    public void clicked(InputEvent event, float x, float y) {
-		SoundManager.play("click");
-		((Game) Gdx.app.getApplicationListener()).setScreen(new About(game));
-	    }
-	});
-	return aboutButton;
+	return newScreenButton(
+	    localization.get("aboutApp"),
+	    new About(game)
+	);
     }
 
     private TextButton exitButton() {
-	TextButton exitButton = new TextButton(localization.get("exit"), skin);
-	exitButton.addListener(new ClickListener() {
-	    @Override
-	    public void clicked(InputEvent event, float x, float y) {
-		SoundManager.play("click");
-		Gdx.app.exit();
-	    }
-	});
-	return exitButton;
+	return clickableButton(
+	    localization.get("exit"),
+	    () -> Gdx.app.exit()
+	);
     }
 
     @Override
