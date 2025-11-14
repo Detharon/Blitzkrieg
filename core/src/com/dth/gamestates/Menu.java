@@ -21,12 +21,12 @@ import com.dth.managers.SoundManager;
 public class Menu implements Screen {
 
     private final Viewport viewport = new ScreenViewport();
-    private Stage stage = new Stage(viewport);
-    private Table table = new Table();
+    private final Stage stage = new Stage(viewport);
+    private final Table table = new Table();
 
-    private Blitzkrieg game;
+    private final Blitzkrieg game;
 
-    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
+    private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
 	new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
     private final I18NBundle localization;
@@ -40,49 +40,62 @@ public class Menu implements Screen {
 
     @Override
     public void show() {
-	TextButton buttonPlay = new TextButton(localization.get("newGame"), skin);
-	buttonPlay.addListener(new ClickListener() {
+	table.add(playButton()).padBottom(10).row();
+	table.add(optionsButton()).padBottom(10).row();
+	table.add(aboutButton()).padBottom(10).row();
+	table.add(exitButton()).row();
+
+	table.setFillParent(true);
+	stage.addActor(table);
+	Gdx.input.setInputProcessor(stage);
+    }
+
+    private TextButton playButton() {
+	TextButton playButton = new TextButton(localization.get("newGame"), skin);
+	playButton.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
 		((Game) Gdx.app.getApplicationListener()).setScreen(new Play(game));
 	    }
 	});
-	table.add(buttonPlay).padBottom(10).row();
+	return playButton;
+    }
 
-	TextButton buttonOptions = new TextButton(localization.get("options"), skin);
-	buttonOptions.addListener(new ClickListener() {
+    private TextButton optionsButton() {
+	TextButton optionsButton = new TextButton(localization.get("options"), skin);
+	optionsButton.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
 		((Game) Gdx.app.getApplicationListener()).setScreen(new Options(game));
 	    }
 	});
-	table.add(buttonOptions).padBottom(10).row();
+	return optionsButton;
+    }
 
-	TextButton buttonAbout = new TextButton(localization.get("aboutApp"), skin);
-	buttonAbout.addListener(new ClickListener() {
+    private TextButton aboutButton() {
+	TextButton aboutButton = new TextButton(localization.get("aboutApp"), skin);
+	aboutButton.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
 		((Game) Gdx.app.getApplicationListener()).setScreen(new About(game));
 	    }
 	});
-	table.add(buttonAbout).padBottom(10).row();
+	return aboutButton;
+    }
 
-	TextButton buttonExit = new TextButton(localization.get("exit"), skin);
-	buttonExit.addListener(new ClickListener() {
+    private TextButton exitButton() {
+	TextButton exitButton = new TextButton(localization.get("exit"), skin);
+	exitButton.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
 		Gdx.app.exit();
 	    }
 	});
-	table.add(buttonExit).row();
-
-	table.setFillParent(true);
-	stage.addActor(table);
-	Gdx.input.setInputProcessor(stage);
+	return exitButton;
     }
 
     @Override
@@ -101,13 +114,12 @@ public class Menu implements Screen {
 
     @Override
     public void pause() {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void resume() {
-	// TODO Auto-generated method stub
+
     }
 
     @Override

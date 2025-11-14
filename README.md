@@ -6,7 +6,7 @@ to comparison of search algorithms for choosing a move in a simple two-player ga
 This is an attempt to keep it alive and maintained and perhaps expand upon in the future.
 
 > [!IMPORTANT]  
-> Right now, the project is in Polish only. I plan to add English language in the future.
+> The project has been mostly translated to English, but you may still come encounter few untranslated texts
 
 ![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.gif)
 

@@ -343,9 +343,7 @@ public class Play implements Screen {
     }
 
     private void refreshHud() {
-	// if (!game.getPreferences().getPlayer1().equals("Brak"))
 	score1.setText(String.valueOf(risk.getPlayer(1).getIncome()));
-	// if (!game.getPreferences().getPlayer2().equals("Brak"))
 	score2.setText(String.valueOf(risk.getPlayer(2).getIncome()));
     }
 
@@ -396,7 +394,7 @@ public class Play implements Screen {
 
     @Override
     public void show() {
-	ownerToColor = new HashMap<Integer, Color>();
+	ownerToColor = new HashMap<>();
 	ownerToColor.put(0, Color.WHITE);
 	ownerToColor.put(1, Color.RED);
 	ownerToColor.put(2, Color.BLUE);
