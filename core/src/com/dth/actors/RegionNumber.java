@@ -57,21 +57,14 @@ public class RegionNumber extends Actor implements Disposable {
     }
 
     private Color getRegionColor() {
-	switch (parent.getRegion()) {
-	    case 0:
-		return Color.valueOf("0078ff");
-	    case 1:
-		return Color.RED;
-	    case 2:
-		return Color.GREEN;
-	    case 3:
-		return Color.CYAN;
-	    case 4:
-		return Color.MAGENTA;
-	    case 5:
-		return Color.YELLOW;
-	    default:
-		return Color.WHITE;
-	}
+	return switch (parent.getRegion()) {
+	    case 0 -> Color.valueOf("0078ff");
+	    case 1 -> Color.RED;
+	    case 2 -> Color.GREEN;
+	    case 3 -> Color.CYAN;
+	    case 4 -> Color.MAGENTA;
+	    case 5 -> Color.YELLOW;
+	    default -> Color.WHITE;
+	};
     }
 }
