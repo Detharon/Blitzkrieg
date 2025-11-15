@@ -1,6 +1,9 @@
 apply plugin: "java"
 
-sourceCompatibility = JavaVersion.VERSION_21
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 project.ext.mainClassName = "com.dth.blitzkrieg.desktop.DesktopLauncher"
