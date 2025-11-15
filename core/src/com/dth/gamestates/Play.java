@@ -11,6 +11,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -42,13 +43,14 @@ import com.dth.managers.SoundManager;
 import com.dth.managers.ZoomProcessor;
 
 public class Play implements Screen {
-    private Viewport screenViewport = new ScreenViewport();
-    private Viewport hudViewport = new ScreenViewport();
-    private Stage stage = new Stage(screenViewport);
-    private Stage hud = new Stage(hudViewport);
+    private final Viewport screenViewport;
+    private final Viewport hudViewport;
+    private final Stage stage;
+    private final Stage hud;
 
     private final Blitzkrieg game;
     private final I18NBundle localization;
+    private final OrthographicCamera screenCamera;
 
     private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
@@ -70,8 +72,24 @@ public class Play implements Screen {
     private Button stopButton;
 
     public Play(Blitzkrieg game) {
+	this(game, new OrthographicCamera());
+    }
+
+    public Play(Blitzkrieg game, OrthographicCamera screenCamera) {
+	// We have to copy the position, because creating a new stage enforces the camera to be centered
+	// The 'cpy()' here can't be skipped, since the Vector3 instance gets mutated by camera
+	var initialPosition = screenCamera.position.cpy();
+
+	this.screenViewport = new ScreenViewport(screenCamera);
+	this.stage = new Stage(screenViewport);
+	screenCamera.position.set(initialPosition);
+
+	this.hudViewport = new ScreenViewport();
+	this.hud = new Stage(hudViewport);
+
 	this.game = game;
 	this.localization = new LanguageManager().loadBundle(game.getPreferences().getLanguage());
+	this.screenCamera = screenCamera;
     }
 
     private void createGraph() {
@@ -357,7 +375,7 @@ public class Play implements Screen {
 	    };
 
 	    int numOfPlayers = risk.getPlayers().size() - 1;
-	    long totalTime[] = new long[numOfPlayers];
+	    long[] totalTime = new long[numOfPlayers];
 
 	    for (int i = 0; i < numOfPlayers; i++) {
 		for (long f : times.get(i)) {
@@ -401,7 +419,7 @@ public class Play implements Screen {
 	InputMultiplexer multiplexer = new InputMultiplexer();
 	multiplexer.addProcessor(hud);
 	multiplexer.addProcessor(stage);
-	multiplexer.addProcessor(new ZoomProcessor(stage));
+	multiplexer.addProcessor(new ZoomProcessor(screenCamera));
 
 	Gdx.input.setInputProcessor(multiplexer);
 
@@ -517,25 +535,23 @@ public class Play implements Screen {
 
     @Override
     public void resize(int width, int height) {
-	screenViewport.update(width, height, true);
-	hudViewport.update(width, height, true);
+	screenViewport.update(width, height);
+	hudViewport.update(width, height);
     }
 
     @Override
     public void pause() {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void resume() {
-	// TODO Auto-generated method stub
 
     }
 
     @Override
     public void hide() {
-	// TODO Auto-generated method stub
+
     }
 
     @Override
@@ -614,8 +630,7 @@ public class Play implements Screen {
 			e.printStackTrace();
 		}*/
 
-	// Play next game
-	((Game) Gdx.app.getApplicationListener()).setScreen(new Play(game));
+	((Game) Gdx.app.getApplicationListener()).setScreen(new Play(game, screenCamera));
     }
 
     private void nextTurnButtonClicked() {

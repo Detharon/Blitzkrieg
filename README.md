@@ -24,4 +24,3 @@ project has proper docs.
 ## Known issues
 
 - Region hitboxes aren't accurate, because of that, the neighbour region highlight is very wonky
-- Starting a new game does not preserve a camera position and zoom level
