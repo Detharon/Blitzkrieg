@@ -333,8 +333,8 @@ public class Options implements Screen {
 	d.button("Ok", true);
 
 	d.setWidth(275);
-	d.setX(Gdx.graphics.getWidth() / 2 - d.getWidth() / 2);
-	d.setY(Gdx.graphics.getHeight() / 2 - d.getHeight() / 2);
+	d.setX(Gdx.graphics.getWidth() / 2f - d.getWidth() / 2);
+	d.setY(Gdx.graphics.getHeight() / 2f - d.getHeight() / 2);
 
 	stage.addActor(d);
     }

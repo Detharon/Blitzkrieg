@@ -46,7 +46,6 @@ public class Play implements Screen {
     private Viewport hudViewport = new ScreenViewport();
     private Stage stage = new Stage(screenViewport);
     private Stage hud = new Stage(hudViewport);
-    private Table table = new Table();
 
     private final Blitzkrieg game;
     private final I18NBundle localization;
@@ -271,7 +270,7 @@ public class Play implements Screen {
 	    }
 	});
 
-	table = new Table();
+	Table table = new Table();
 	table.setFillParent(true);
 	table.add(buttonMenu);
 	table.add(buttonPlay);
@@ -477,7 +476,7 @@ public class Play implements Screen {
 
 	// Create and initialize logger
 	if (game.getPreferences().isLogging()) {
-	    log = new LogManager(risk, ',');
+	    log = new LogManager(risk, ',', localization);
 	    log.start();
 	}
     }
