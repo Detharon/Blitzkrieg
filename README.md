@@ -5,10 +5,13 @@ to comparison of search algorithms for choosing a move in a simple two-player ga
 
 This is an attempt to keep it alive and maintained and perhaps expand upon in the future.
 
-> [!IMPORTANT]  
-> The project has been mostly translated to English, but you may still come encounter few untranslated texts
-
 ![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.gif)
+
+## Supported languages
+
+Blitzkrieg is available in the following languages:
+- English (default)
+- Polish
 
 ## Project structure 
 
@@ -17,3 +20,8 @@ Blitzkrieg is based on LibGDX and follows a basic structure of a multi-platform 
 All logic resides in the **code** project, while the **desktop** one provides just a single window to launch it.
 The **desktop** project is responsible for creating the executable. I'll describe the complete process once this
 project has proper docs.
+
+## Known issues
+
+- Region hitboxes aren't accurate, because of that, the neighbour region highlight is very wonky
+- Starting a new game does not preserve a camera position and zoom level
