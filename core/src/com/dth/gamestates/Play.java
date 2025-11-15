@@ -283,7 +283,7 @@ public class Play implements Screen {
 
 	hud.addActor(table);
 
-	Window w = new Window("Gracze", skin);
+	Window w = new Window(localization.get("players"), skin);
 	w.setMovable(false);
 
 	Table windowTable = new Table();
@@ -351,7 +351,7 @@ public class Play implements Screen {
 	if (risk.hasEnded()) {
 	    SoundManager.play("end");
 
-	    Dialog dialog = new Dialog("Koniec", skin, "dialog") {
+	    Dialog dialog = new Dialog(localization.get("theEnd"), skin, "dialog") {
 		public void result(Object obj) {
 		    remove();
 		}
@@ -366,25 +366,25 @@ public class Play implements Screen {
 		}
 	    }
 
-	    StringBuilder text = new StringBuilder("Gra zakończona.\n");
+	    StringBuilder text = new StringBuilder(localization.get("gameFinished")).append(".\n");
 
 	    int turnSum = 0;
 	    for (int i = 0; i < numOfPlayers; i++) {
 		turnSum += turns[i];
 	    }
 
-	    text.append(String.format("Liczba tur %d.\n", turnSum));
+	    text.append(localization.format("numberOfTurns", turnSum)).append(".\n");
 
 	    for (int i = 0; i < risk.getPlayers().size() - 1; i++) {
-		text.append(String.format("Gracz %d:\n", i + 1));
-		text.append(String.format("Całkowity czas %dms.\n", totalTime[i]));
-		text.append(String.format("Średni czas %dms.\n", totalTime[i] / (turns[i])));
+		text.append(localization.format("player", i + 1)).append(":\n");
+		text.append(localization.format("totalTime", totalTime[i])).append(".\n");
+		text.append(localization.format("averageTime", totalTime[i] / (turns[i]))).append(".\n");
 	    }
 
 	    dialog.setWidth(250);
 	    dialog.setHeight(250);
-	    dialog.setX(Gdx.graphics.getWidth() / 2 - dialog.getWidth() / 2);
-	    dialog.setY(Gdx.graphics.getHeight() / 2 - dialog.getHeight() / 2);
+	    dialog.setX(Gdx.graphics.getWidth() / 2f - dialog.getWidth() / 2);
+	    dialog.setY(Gdx.graphics.getHeight() / 2f - dialog.getHeight() / 2);
 	    dialog.text(text.toString());
 	    dialog.button("Ok", true);
 	    dialog.key(Keys.ENTER, true);
