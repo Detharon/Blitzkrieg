@@ -1,5 +1,7 @@
 # Blitzkrieg
 
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
 Blitzkrieg is an old project of mine, made around 2014, that I made as a part of my master's degree related
 to comparison of search algorithms for choosing a move in a simple two-player game.
 
