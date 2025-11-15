@@ -31,15 +31,13 @@ import java.util.function.Consumer;
 public class Options implements Screen {
     private final Blitzkrieg game;
 
-    private Viewport viewport = new ScreenViewport();
-    private Stage stage = new Stage(viewport);
+    private final Viewport viewport = new ScreenViewport();
+    private final Stage stage = new Stage(viewport);
 
-    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
+    private final Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"),
 	new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
-    private RiskPreferences prefs;
-
-    private Table table = new Table();
+    private final RiskPreferences prefs;
 
     // Player types
     public String[] playerTypes;
@@ -76,7 +74,7 @@ public class Options implements Screen {
 
     @Override
     public void show() {
-	table = new Table();
+	Table table = new Table();
 
 	optionLabel = new Label(localization.get("options"), skin);
 	table.add(optionLabel).colspan(4);
