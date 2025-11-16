@@ -1,7 +1,6 @@
 package com.dth.blitzkrieg.gamestates;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
@@ -500,7 +499,7 @@ public class Play implements Screen {
     @Override
     public void resize(int width, int height) {
 	screenViewport.update(width, height);
-	hudViewport.update(width, height);
+	hudViewport.update(width, height, true);
     }
 
     @Override
