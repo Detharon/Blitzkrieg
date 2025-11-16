@@ -8,7 +8,7 @@ to comparison of search algorithms for choosing a move in a simple two-player ga
 This is an attempt to keep it alive and maintained and perhaps expand upon in the future. Keep in mind that currently
 it's just a testbed. There's no way to play it yourself, you can only watch the various AIs play each other.
 
-![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.mp4)
+![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.gif)
 
 ## Supported languages
 
