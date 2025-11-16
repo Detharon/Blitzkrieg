@@ -9,11 +9,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ZoomProcessor extends InputAdapter {
     private final OrthographicCamera cam;
-
     private final Vector2 lastTouch = new Vector2();
 
-    private final int[] zoomLevels = {41, 51, 64, 80, 100, 125, 156, 195, 244};
-    private int zoomLevel = 100;
+    // Zoom constants, they lock zoom to certain levels so it's not possible to zoom in or out too much
+    private static final int MIN_ZOOM = 40;
+    private static final int MAX_ZOOM = 250;
+
+    // Changes over time, holds the current zoom factor (larger number = smaller objects)
+    private float currentZoom = 100f;
 
     public ZoomProcessor(OrthographicCamera camera) {
 	this.cam = camera;
@@ -59,25 +62,10 @@ public class ZoomProcessor extends InputAdapter {
 
     @Override
     public boolean scrolled(int amount) {
-	if (amount > 0 && zoomLevel > zoomLevels[0]) {
-	    for (int i = 0; i < zoomLevels.length; i++) {
-		if (zoomLevels[i] == zoomLevel) {
-		    zoomLevel = zoomLevels[i - 1];
-		    break;
-		}
-	    }
-	}
+	currentZoom *= (amount < 0) ? 1.10f : 0.90f;
+	currentZoom = Math.clamp(currentZoom, MIN_ZOOM, MAX_ZOOM);
 
-	if (amount < 0 && zoomLevel < zoomLevels[zoomLevels.length - 1]) {
-	    for (int i = 0; i < zoomLevels.length; i++) {
-		if (zoomLevels[i] == zoomLevel) {
-		    zoomLevel = zoomLevels[i + 1];
-		    break;
-		}
-	    }
-	}
-
-	cam.zoom = 100f / zoomLevel;
+	cam.zoom = 100f / currentZoom;
 	cam.update();
 	return false;
     }
