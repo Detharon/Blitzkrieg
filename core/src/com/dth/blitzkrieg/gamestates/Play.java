@@ -12,7 +12,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -37,10 +36,7 @@ import com.dth.blitzkrieg.core.DefaultBorderSetter;
 import com.dth.blitzkrieg.core.Player;
 import com.dth.blitzkrieg.core.Province;
 import com.dth.blitzkrieg.core.Risk;
-import com.dth.blitzkrieg.managers.LanguageManager;
-import com.dth.blitzkrieg.managers.LogManager;
-import com.dth.blitzkrieg.managers.SoundManager;
-import com.dth.blitzkrieg.managers.ZoomProcessor;
+import com.dth.blitzkrieg.managers.*;
 
 public class Play implements Screen {
     private final Viewport screenViewport;
@@ -52,7 +48,7 @@ public class Play implements Screen {
     private final I18NBundle localization;
     private final OrthographicCamera screenCamera;
 
-    private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
+    private final Skin skin = SkinManager.loadUISkin();
 
     private final MapRegion[] regions = new MapRegion[42];
     private final RegionNumber[] armies = new RegionNumber[42];
