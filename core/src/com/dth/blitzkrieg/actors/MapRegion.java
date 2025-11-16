@@ -3,6 +3,7 @@ package com.dth.blitzkrieg.actors;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -20,18 +21,19 @@ public class MapRegion extends Actor implements Disposable {
 
     private int region;
 
-    private Texture texture;
+    private final Texture texture;
+    private final Pixmap pixmap;
 
     private ArrayList<MapRegion> neighbours;
 
     private float x;
     private float y;
 
-
-    public MapRegion(Texture texture, int id, int region, float x, float y) {
+    public MapRegion(Pixmap pixmap, int id, int region, float x, float y) {
 	this.id = id;
 
-	this.texture = texture;
+	this.pixmap = pixmap;
+	this.texture = new Texture(pixmap);
 	this.region = region;
 
 	this.x = x;
@@ -40,6 +42,23 @@ public class MapRegion extends Actor implements Disposable {
 	neighbours = new ArrayList<>(4);
 
 	setBounds(x, y, getWidth(), getHeight());
+    }
+
+    @Override
+    public Actor hit(float x, float y, boolean touchable) {
+	// First let Scene2D do simple bounds check
+	if (!isVisible() || x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+	    return null;
+	}
+
+	// libGDX Pixmap is flipped vertically vs Scene2D coordinates
+	int ix = (int) x;
+	int iy = pixmap.getHeight() - 1 - (int) y;
+
+	int pixel = pixmap.getPixel(ix, iy);
+	int alpha = pixel & 0x000000ff;  // last byte is alpha
+
+	return alpha > 10 ? this : null;
     }
 
     public int getId() {

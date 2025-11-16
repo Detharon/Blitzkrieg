@@ -1,6 +1,7 @@
 package com.dth.blitzkrieg.gamestates;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
@@ -54,8 +55,8 @@ public class Play implements Screen {
 
     private Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas")));
 
-    private MapRegion[] regions = new MapRegion[42];
-    private RegionNumber[] armies = new RegionNumber[42];
+    private final MapRegion[] regions = new MapRegion[42];
+    private final RegionNumber[] armies = new RegionNumber[42];
 
     private Province[] provinces;
 
@@ -110,94 +111,57 @@ public class Play implements Screen {
 	AssetManager manager = game.getManager();
 
 	regions[0] = new MapRegion(manager.get("map/eu1.png"), 0, MapRegion.EUROPE, -30, 118);
-	stage.addActor(regions[0]);
 	regions[1] = new MapRegion(manager.get("map/eu2.png"), 1, MapRegion.EUROPE, 0, 0);
-	stage.addActor(regions[1]);
 	regions[2] = new MapRegion(manager.get("map/eu3.png"), 2, MapRegion.EUROPE, 1, 66);
-	stage.addActor(regions[2]);
 	regions[3] = new MapRegion(manager.get("map/eu4.png"), 3, MapRegion.EUROPE, 47, 44);
-	stage.addActor(regions[3]);
 	regions[4] = new MapRegion(manager.get("map/eu5.png"), 4, MapRegion.EUROPE, 57, 88);
-	stage.addActor(regions[4]);
 	regions[5] = new MapRegion(manager.get("map/eu6.png"), 5, MapRegion.EUROPE, 58, -1);
-	stage.addActor(regions[5]);
 	regions[6] = new MapRegion(manager.get("map/eu7.png"), 6, MapRegion.EUROPE, 111, 12);
-	stage.addActor(regions[6]);
 
 	regions[7] = new MapRegion(manager.get("map/as1.png"), 7, MapRegion.ASIA, 134, -106);
-	stage.addActor(regions[7]);
 	regions[8] = new MapRegion(manager.get("map/as2.png"), 8, MapRegion.ASIA, 226, 49);
-	stage.addActor(regions[8]);
 	regions[9] = new MapRegion(manager.get("map/as3.png"), 9, MapRegion.ASIA, 208, 0);
-	stage.addActor(regions[9]);
 	regions[10] = new MapRegion(manager.get("map/as4.png"), 10, MapRegion.ASIA, 276, 57);
-	stage.addActor(regions[10]);
 	regions[11] = new MapRegion(manager.get("map/as5.png"), 11, MapRegion.ASIA, 361, 90);
-	stage.addActor(regions[11]);
 	regions[12] = new MapRegion(manager.get("map/as6.png"), 12, MapRegion.ASIA, 354, 56);
-	stage.addActor(regions[12]);
 	regions[13] = new MapRegion(manager.get("map/as7.png"), 13, MapRegion.ASIA, 356, -6);
-	stage.addActor(regions[13]);
 	regions[14] = new MapRegion(manager.get("map/as8.png"), 14, MapRegion.ASIA, 317, -78);
-	stage.addActor(regions[14]);
 	regions[15] = new MapRegion(manager.get("map/as9.png"), 15, MapRegion.ASIA, 271, -132);
-	stage.addActor(regions[15]);
 	regions[16] = new MapRegion(manager.get("map/as10.png"), 16, MapRegion.ASIA, 483, 32);
-	stage.addActor(regions[16]);
 	regions[17] = new MapRegion(manager.get("map/as11.png"), 17, MapRegion.ASIA, 548, -18);
-	stage.addActor(regions[17]);
 	regions[18] = new MapRegion(manager.get("map/as12.png"), 18, MapRegion.ASIA, 408, -152);
-	stage.addActor(regions[18]);
 
 	regions[19] = new MapRegion(manager.get("map/oc1.png"), 19, MapRegion.OCEANIA, 426, -205);
-	stage.addActor(regions[19]);
 	regions[20] = new MapRegion(manager.get("map/oc2.png"), 20, MapRegion.OCEANIA, 559, -208);
-	stage.addActor(regions[20]);
 	regions[21] = new MapRegion(manager.get("map/oc3.png"), 21, MapRegion.OCEANIA, 481, -331);
-	stage.addActor(regions[21]);
 	regions[22] = new MapRegion(manager.get("map/oc4.png"), 22, MapRegion.OCEANIA, 542, -357);
-	stage.addActor(regions[22]);
 
 	regions[23] = new MapRegion(manager.get("map/af1.png"), 23, MapRegion.AFRICA, -36, -157);
-	stage.addActor(regions[23]);
 	regions[24] = new MapRegion(manager.get("map/af2.png"), 24, MapRegion.AFRICA, 73, -78);
-	stage.addActor(regions[24]);
 	regions[25] = new MapRegion(manager.get("map/af3.png"), 25, MapRegion.AFRICA, 123, -239);
-	stage.addActor(regions[25]);
 	regions[26] = new MapRegion(manager.get("map/af4.png"), 26, MapRegion.AFRICA, 73, -225);
-	stage.addActor(regions[26]);
 	regions[27] = new MapRegion(manager.get("map/af5.png"), 27, MapRegion.AFRICA, 81, -319);
-	stage.addActor(regions[27]);
 	regions[28] = new MapRegion(manager.get("map/af6.png"), 28, MapRegion.AFRICA, 205, -286);
-	stage.addActor(regions[28]);
 
 	regions[29] = new MapRegion(manager.get("map/nam1.png"), 29, MapRegion.N_AMERICA, -150, 108);
-	stage.addActor(regions[29]);
 	regions[30] = new MapRegion(manager.get("map/nam2.png"), 30, MapRegion.N_AMERICA, -280, 40);
-	stage.addActor(regions[30]);
 	regions[31] = new MapRegion(manager.get("map/nam3.png"), 31, MapRegion.N_AMERICA, -353, 37);
-	stage.addActor(regions[31]);
 	regions[32] = new MapRegion(manager.get("map/nam4.png"), 32, MapRegion.N_AMERICA, -452, 113);
-	stage.addActor(regions[32]);
 	regions[33] = new MapRegion(manager.get("map/nam5.png"), 33, MapRegion.N_AMERICA, -538, 93);
-	stage.addActor(regions[33]);
 	regions[34] = new MapRegion(manager.get("map/nam6.png"), 34, MapRegion.N_AMERICA, -448, 66);
-	stage.addActor(regions[34]);
 	regions[35] = new MapRegion(manager.get("map/nam7.png"), 35, MapRegion.N_AMERICA, -463, -12);
-	stage.addActor(regions[35]);
 	regions[36] = new MapRegion(manager.get("map/nam8.png"), 36, MapRegion.N_AMERICA, -415, -40);
-	stage.addActor(regions[36]);
 	regions[37] = new MapRegion(manager.get("map/nam9.png"), 37, MapRegion.N_AMERICA, -452, -122);
-	stage.addActor(regions[37]);
+;
 
 	regions[38] = new MapRegion(manager.get("map/sam1.png"), 38, MapRegion.S_AMERICA, -323, -177);
-	stage.addActor(regions[38]);
 	regions[39] = new MapRegion(manager.get("map/sam2.png"), 39, MapRegion.S_AMERICA, -332, -282);
-	stage.addActor(regions[39]);
 	regions[40] = new MapRegion(manager.get("map/sam3.png"), 40, MapRegion.S_AMERICA, -298, -308);
-	stage.addActor(regions[40]);
 	regions[41] = new MapRegion(manager.get("map/sam4.png"), 41, MapRegion.S_AMERICA, -283, -405);
-	stage.addActor(regions[41]);
+
+	for (MapRegion region : regions) {
+	    stage.addActor(region);
+	}
 
 	for (Province sourceProvince : provinces) {
 	    for (Province targetProvince : sourceProvince.getNeighbours()) {
@@ -210,8 +174,8 @@ public class Play implements Screen {
 	    stage.addActor(armies[i]);
 	}
 
-	for (Actor actor : regions) {
-	    actor.addListener(new ClickListener() {
+	for (MapRegion region : regions) {
+	    region.addListener(new ClickListener() {
 		@Override
 		public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 		    MapRegion actor = (MapRegion) event.getListenerActor();
@@ -223,7 +187,6 @@ public class Play implements Screen {
 		    if (r > 1f) r = 2 - r;
 		    if (g > 1f) g = 2 - g;
 		    if (b > 1f) b = 2 - b;
-
 		    actor.setColor(new Color(r, g, b, 1f));
 
 		    for (MapRegion neighbour : actor.getNeighbours()) {
@@ -234,7 +197,6 @@ public class Play implements Screen {
 			if (r > 1f) r = 2 - r;
 			if (g > 1f) g = 2 - g;
 			if (b > 1f) b = 2 - b;
-
 			neighbour.setColor(new Color(r, g, b, 1f));
 		    }
 		}
@@ -246,6 +208,8 @@ public class Play implements Screen {
 	    });
 	}
     }
+
+
 
     private void drawHUD() {
 	TextButton buttonMenu = new TextButton(localization.get("menu"), skin);

@@ -5,7 +5,8 @@
 Blitzkrieg is an old project of mine, made around 2014, that I made as a part of my master's degree related
 to comparison of search algorithms for choosing a move in a simple two-player game.
 
-This is an attempt to keep it alive and maintained and perhaps expand upon in the future.
+This is an attempt to keep it alive and maintained and perhaps expand upon in the future. Keep in mind that currently
+it's just a testbed. There's no way to play it yourself, you can only watch the various AIs play each other.
 
 ![Showcase](https://github.com/Detharon/Blitzkrieg/blob/master/docs/Recording.gif)
 
@@ -25,4 +26,13 @@ project has proper docs.
 
 ## Known issues
 
-- Region hitboxes aren't accurate, because of that, the neighbour region highlight is very wonky
+- Running all turns and then running a new game does not stop the previous game from running
+
+## Planned features
+
+- Russian & Spanish translation
+- Map encoded as a JSON
+- More than one map
+- Play against AI
+- Better summary screen
+- And more...
