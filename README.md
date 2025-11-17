@@ -27,6 +27,7 @@ project has proper docs.
 ## Known issues
 
 - Running all turns and then running a new game does not stop the previous game from running
+- The region selection flickers when the AIs are playing
 
 ## Planned features
 

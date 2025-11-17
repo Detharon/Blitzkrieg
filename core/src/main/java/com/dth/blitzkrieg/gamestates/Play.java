@@ -31,14 +31,12 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.blitzkrieg.actors.MapRegion;
 import com.dth.blitzkrieg.actors.RegionNumber;
-import com.dth.blitzkrieg.algorithm.*;
 import com.dth.blitzkrieg.core.Blitzkrieg;
 import com.dth.blitzkrieg.core.ContinentIncome;
 import com.dth.blitzkrieg.core.DefaultBorderSetter;
 import com.dth.blitzkrieg.core.Player;
 import com.dth.blitzkrieg.core.Province;
 import com.dth.blitzkrieg.core.Risk;
-import com.dth.blitzkrieg.managers.*;
 
 public class Play implements Screen {
     private final Viewport screenViewport;
