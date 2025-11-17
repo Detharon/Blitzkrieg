@@ -18,7 +18,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -63,9 +62,8 @@ public class Play implements Screen {
     private ArrayList<ArrayList<Long>> times;
 
     private Risk risk;
-    private Thread gameThread;
+    private Thread autoPlayThread;
     private Label score1, score2;
-    private Button stopButton;
 
     public Play(Blitzkrieg game) {
 	this(game, new OrthographicCamera());
@@ -239,7 +237,7 @@ public class Play implements Screen {
 	    }
 	});
 
-	stopButton = new TextButton(localization.get("stop"), skin);
+	TextButton stopButton = new TextButton(localization.get("stop"), skin);
 	stopButton.addListener(new ClickListener() {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
@@ -562,64 +560,42 @@ public class Play implements Screen {
 
     private void menuButtonClicked() {
 	SoundManager.play("click");
-
-	// If the game is running, stop it.
-		/*try {
-			if (gameThread != null && gameThread.isAlive()) {
-				gameThread.interrupt();
-			}
-			gameThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
-
+	stopAutoPlay();
 	((Game) Gdx.app.getApplicationListener()).setScreen(new Menu(game));
     }
 
     private void newGameButtonClicked() {
 	SoundManager.play("click");
-
-	// If the game is running, stop it.
-		/*try {
-			if (gameThread != null && gameThread.isAlive()) {
-				gameThread.interrupt();
-			}
-			gameThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}*/
-
+	stopAutoPlay();
 	((Game) Gdx.app.getApplicationListener()).setScreen(new Play(game, screenCamera));
     }
 
     private void nextTurnButtonClicked() {
-	if (gameThread == null || !gameThread.isAlive()) {
+	if (!risk.hasEnded() && !autoPlayThread.isAlive()) {
 	    playNextTurnSound();
 	    nextTurn();
 	}
     }
 
     private void allTurnsButtonClicked() {
-	if (gameThread == null || !gameThread.isAlive()) {
-	    gameThread = new Thread(new Runnable() {
-		public void run() {
-		    while (!risk.hasEnded()) {
-			nextTurn();
-			try {
-			    Thread.sleep(100);
-			} catch (InterruptedException e) {
-			    break;
-			}
-		    }
+	if (autoPlayThread == null || !autoPlayThread.isAlive()) {
+	    autoPlayThread = new Thread(() -> {
+		while (!risk.hasEnded() && !autoPlayThread.isInterrupted()) {
+		    nextTurn();
 		}
 	    });
 
-	    gameThread.start();
+	    autoPlayThread.start();
 	}
     }
 
     private void stopButtonClicked() {
-	if (gameThread != null) gameThread.interrupt();
+	stopAutoPlay();
+    }
+
+
+    private void stopAutoPlay() {
+	if (autoPlayThread != null) autoPlayThread.interrupt();
     }
 
 }
