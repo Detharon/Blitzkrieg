@@ -6,9 +6,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.dth.blitzkrieg.core.Blitzkrieg;
 
 public class DesktopLauncher {
-	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.addIcon("icon.png", FileType.Internal);
-		new LwjglApplication(new Blitzkrieg(), config);
-	}
+    public static void main(String[] arg) {
+	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+	config.addIcon("icon.png", FileType.Internal);
+	new LwjglApplication(new Blitzkrieg(), config);
+    }
 }
