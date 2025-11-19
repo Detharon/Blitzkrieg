@@ -463,13 +463,12 @@ public class Play implements Screen {
 		int chosenProvince = MathUtils.random(0, provinces.length - 1);
 
 		// Was the province already chosen?
-		if (provinces[chosenProvince].getOwner() != 0) continue;
+		if (!provinces[chosenProvince].isNeutral()) continue;
 
 		// Make sure that neighbours are neutral
-		boolean unique = true;
-		for (Province neighbour : provinces[chosenProvince].getNeighbours()) {
-		    if (neighbour.getOwner() != 0) unique = false;
-		}
+		boolean unique = provinces[chosenProvince].getNeighbours()
+		    .stream()
+		    .allMatch(Province::isNeutral);
 
 		if (unique) {
 		    provinces[chosenProvince].setOwner(i);
