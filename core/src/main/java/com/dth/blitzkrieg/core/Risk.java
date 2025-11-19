@@ -62,7 +62,7 @@ public class Risk {
 	BorderSetter bs = new DefaultBorderSetter();
 	bs.setBorders(copyProvinces);
 
-	ArrayList<Player> copyPlayers = new ArrayList<Player>();
+	ArrayList<Player> copyPlayers = new ArrayList<>();
 
 	for (Player player : players) {
 	    copyPlayers.add(new Player(player));
@@ -103,13 +103,6 @@ public class Risk {
 
     public ContinentIncome getContinentIncome() {
 	return continentIncome;
-    }
-
-    public boolean deployArmy(Province province, int army) {
-	if (army < 1) return false;
-
-	province.setArmy(province.getArmy() + army);
-	return true;
     }
 
     public boolean makeMove(Move move) {

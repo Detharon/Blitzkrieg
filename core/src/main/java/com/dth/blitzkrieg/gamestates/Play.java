@@ -145,7 +145,6 @@ public class Play implements Screen {
 	regions[35] = new MapRegion(manager.get("map/nam7.png"), 35, MapRegion.N_AMERICA, -463, -12);
 	regions[36] = new MapRegion(manager.get("map/nam8.png"), 36, MapRegion.N_AMERICA, -415, -40);
 	regions[37] = new MapRegion(manager.get("map/nam9.png"), 37, MapRegion.N_AMERICA, -452, -122);
-;
 
 	regions[38] = new MapRegion(manager.get("map/sam1.png"), 38, MapRegion.S_AMERICA, -323, -177);
 	regions[39] = new MapRegion(manager.get("map/sam2.png"), 39, MapRegion.S_AMERICA, -332, -282);

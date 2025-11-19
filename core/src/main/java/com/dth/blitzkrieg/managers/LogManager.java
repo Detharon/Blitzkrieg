@@ -65,7 +65,7 @@ public class LogManager {
     public void saveTurn(int player, int turn, int time) {
 	int income = risk.getPlayer(player).getIncome();
 
-	StringBuilder finalString = new StringBuilder("");
+	StringBuilder finalString = new StringBuilder();
 
 	int[] values = {player, turn, income, time};
 	for (int i = 0; i < values.length; i++) {
