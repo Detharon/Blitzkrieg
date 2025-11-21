@@ -4,16 +4,15 @@ import com.dth.blitzkrieg.algorithm.ArtificialPlayer;
 
 public class Player {
     private final int id;
+    private final ArtificialPlayer ai;
+
     private int income;
-    private boolean canTransfer;
     private boolean alive;
-    private ArtificialPlayer ai;
 
     public Player(int id, int income, ArtificialPlayer ai) {
 	this.id = id;
 	this.income = income;
 	this.ai = ai;
-	canTransfer = false;
 	alive = true;
     }
 
@@ -35,14 +34,6 @@ public class Player {
 
     public ArtificialPlayer getAi() {
 	return ai;
-    }
-
-    public boolean canTransfer() {
-	return canTransfer;
-    }
-
-    public void setCanTransfer(boolean canTransfer) {
-	this.canTransfer = canTransfer;
     }
 
     public boolean isAlive() {
