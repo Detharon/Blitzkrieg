@@ -75,14 +75,11 @@ public class Risk {
 	players.add(player);
     }
 
-    // TODO: Should return an Option
     public Player getPlayer(int id) {
-	for (Player player : players) {
-	    if (player.getId() == id) {
-		return player;
-	    }
-	}
-	return null;
+	return players.stream()
+	    .filter(player -> player.getId() == id)
+	    .findFirst()
+	    .orElseThrow(() -> new IllegalArgumentException("Requested a non-existing player with id " + id));
     }
 
     public Province[] getProvinces() {
