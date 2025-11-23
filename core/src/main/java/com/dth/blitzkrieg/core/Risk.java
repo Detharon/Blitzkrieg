@@ -59,8 +59,12 @@ public class Risk {
 	    copyProvinces[i] = new Province(provinces[i]);
 	}
 
-	BorderSetter bs = new DefaultBorderSetter();
-	bs.setBorders(copyProvinces);
+	for (Province copyProvince : copyProvinces) {
+	    provinces[copyProvince.getId()]
+		.getNeighbours().stream().map(Province::getId).forEach(neighborId ->
+		    copyProvince.addNeighbour(copyProvinces[neighborId])
+		);
+	}
 
 	ArrayList<Player> copyPlayers = new ArrayList<>();
 

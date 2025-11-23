@@ -37,4 +37,5 @@ project has proper docs.
 - More than one map
 - Play against AI
 - Better summary screen
+- Better error handling, proper Gdx logging
 - And more...

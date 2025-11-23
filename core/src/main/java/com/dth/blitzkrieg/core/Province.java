@@ -6,13 +6,6 @@ import java.util.List;
 public class Province {
     public static int NO_OWNER = 0;
 
-    public static int EUROPE = 0;
-    public static int AFRICA = 1;
-    public static int ASIA = 2;
-    public static int OCEANIA = 3;
-    public static int N_AMERICA = 4;
-    public static int S_AMERICA = 5;
-
     private final int id;
     private final int continent;
     private int owner;

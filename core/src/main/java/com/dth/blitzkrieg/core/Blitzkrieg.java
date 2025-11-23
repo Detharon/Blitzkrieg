@@ -7,6 +7,14 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.dth.blitzkrieg.gamestates.Menu;
 import com.dth.blitzkrieg.managers.SoundManager;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class Blitzkrieg extends Game {
     public static AssetManager manager = new AssetManager();
     public static RiskPreferences preferences = new RiskPreferences();
@@ -22,27 +30,30 @@ public class Blitzkrieg extends Game {
     @Override
     public void create() {
 	setScreen(new Menu(this));
-
 	loadSounds();
 	loadGfx();
     }
 
     private void loadGfx() {
-	//TODO: use texture atlas
+	streamMapImages().forEach(imageName ->
+	    manager.load(Gdx.files.internal(imageName).path(), Pixmap.class)
+	);
 
-	String[] pixMaps = {"eu1.png", "eu2.png", "eu3.png", "eu4.png", "eu5.png", "eu6.png", "eu7.png",
-	    "as1.png", "as2.png", "as3.png", "as4.png", "as5.png", "as6.png", "as7.png", "as8.png", "as9.png",
-	    "as10.png", "as11.png", "as12.png", "oc1.png", "oc2.png", "oc3.png", "oc4.png",
-	    "af1.png", "af2.png", "af3.png", "af4.png", "af5.png", "af6.png",
-	    "nam1.png", "nam2.png", "nam3.png", "nam4.png", "nam5.png", "nam6.png", "nam7.png", "nam8.png", "nam9.png",
-	    "sam1.png", "sam2.png", "sam3.png", "sam4.png"
-	};
+	while (!manager.update());
+    }
 
-	for (String pixMap : pixMaps) {
-	    manager.load(Gdx.files.internal("map/" + pixMap).path(), Pixmap.class);
+    private List<String> streamMapImages() {
+	Path directory = Paths.get("map/Europe");
+	try (Stream<Path> files = Files.list(directory)) {
+	    return files
+		.filter(Files::isRegularFile)
+		.map(Path::toString)
+		.filter(string -> string.toLowerCase().endsWith(".png"))
+		.toList();
+	} catch (IOException e) {
+	    e.printStackTrace();
 	}
-
-	while (!manager.update()) ;
+	return Collections.emptyList();
     }
 
     private void loadSounds() {

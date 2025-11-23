@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.dth.blitzkrieg.algorithm.*;
+import com.dth.blitzkrieg.core.map.Map;
+import com.dth.blitzkrieg.core.map.MapLoader;
 import com.dth.blitzkrieg.managers.*;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +34,6 @@ import com.dth.blitzkrieg.actors.MapRegion;
 import com.dth.blitzkrieg.actors.RegionNumber;
 import com.dth.blitzkrieg.core.Blitzkrieg;
 import com.dth.blitzkrieg.core.ContinentIncome;
-import com.dth.blitzkrieg.core.DefaultBorderSetter;
 import com.dth.blitzkrieg.core.Player;
 import com.dth.blitzkrieg.core.Province;
 import com.dth.blitzkrieg.core.Risk;
@@ -46,6 +47,7 @@ public class Play implements Screen {
     private final Blitzkrieg game;
     private final I18NBundle localization;
     private final OrthographicCamera screenCamera;
+    private final Map map = MapLoader.loadMap("Europe");
 
     private final Skin skin = SkinManager.loadUISkin();
 
@@ -89,67 +91,38 @@ public class Play implements Screen {
     private void createGraph() {
 	provinces = new Province[42];
 
-	// Create provinces
-	for (int i = 0; i < 42; i++) {
-	    if (i < 7) provinces[i] = new Province(i, Province.EUROPE);
-	    else if (i < 19) provinces[i] = new Province(i, Province.ASIA);
-	    else if (i < 23) provinces[i] = new Province(i, Province.OCEANIA);
-	    else if (i < 29) provinces[i] = new Province(i, Province.AFRICA);
-	    else if (i < 38) provinces[i] = new Province(i, Province.N_AMERICA);
-	    else provinces[i] = new Province(i, Province.S_AMERICA);
-	}
+	// Create game provinces
+	map.regions
+	    .forEach(region ->
+		region.provinces.forEach(province ->
+		    provinces[province.id] = new Province(province.id, region.id)
+		)
+	    );
+
+	// Create neighbors
+	map.regions.stream()
+	    .flatMap(region -> region.provinces.stream())
+	    .forEach(province ->
+		province.neighbors.forEach(neighbor ->
+		    provinces[province.id].addNeighbour(provinces[neighbor])
+		)
+	    );
     }
 
     private void drawMap() {
 	AssetManager manager = game.getManager();
 
-	regions[0] = new MapRegion(manager.get("map/eu1.png"), 0, MapRegion.EUROPE, -30, 118);
-	regions[1] = new MapRegion(manager.get("map/eu2.png"), 1, MapRegion.EUROPE, 0, 0);
-	regions[2] = new MapRegion(manager.get("map/eu3.png"), 2, MapRegion.EUROPE, 1, 66);
-	regions[3] = new MapRegion(manager.get("map/eu4.png"), 3, MapRegion.EUROPE, 47, 44);
-	regions[4] = new MapRegion(manager.get("map/eu5.png"), 4, MapRegion.EUROPE, 57, 88);
-	regions[5] = new MapRegion(manager.get("map/eu6.png"), 5, MapRegion.EUROPE, 58, -1);
-	regions[6] = new MapRegion(manager.get("map/eu7.png"), 6, MapRegion.EUROPE, 111, 12);
-
-	regions[7] = new MapRegion(manager.get("map/as1.png"), 7, MapRegion.ASIA, 134, -106);
-	regions[8] = new MapRegion(manager.get("map/as2.png"), 8, MapRegion.ASIA, 226, 49);
-	regions[9] = new MapRegion(manager.get("map/as3.png"), 9, MapRegion.ASIA, 208, 0);
-	regions[10] = new MapRegion(manager.get("map/as4.png"), 10, MapRegion.ASIA, 276, 57);
-	regions[11] = new MapRegion(manager.get("map/as5.png"), 11, MapRegion.ASIA, 361, 90);
-	regions[12] = new MapRegion(manager.get("map/as6.png"), 12, MapRegion.ASIA, 354, 56);
-	regions[13] = new MapRegion(manager.get("map/as7.png"), 13, MapRegion.ASIA, 356, -6);
-	regions[14] = new MapRegion(manager.get("map/as8.png"), 14, MapRegion.ASIA, 317, -78);
-	regions[15] = new MapRegion(manager.get("map/as9.png"), 15, MapRegion.ASIA, 271, -132);
-	regions[16] = new MapRegion(manager.get("map/as10.png"), 16, MapRegion.ASIA, 483, 32);
-	regions[17] = new MapRegion(manager.get("map/as11.png"), 17, MapRegion.ASIA, 548, -18);
-	regions[18] = new MapRegion(manager.get("map/as12.png"), 18, MapRegion.ASIA, 408, -152);
-
-	regions[19] = new MapRegion(manager.get("map/oc1.png"), 19, MapRegion.OCEANIA, 426, -205);
-	regions[20] = new MapRegion(manager.get("map/oc2.png"), 20, MapRegion.OCEANIA, 559, -208);
-	regions[21] = new MapRegion(manager.get("map/oc3.png"), 21, MapRegion.OCEANIA, 481, -331);
-	regions[22] = new MapRegion(manager.get("map/oc4.png"), 22, MapRegion.OCEANIA, 542, -357);
-
-	regions[23] = new MapRegion(manager.get("map/af1.png"), 23, MapRegion.AFRICA, -36, -157);
-	regions[24] = new MapRegion(manager.get("map/af2.png"), 24, MapRegion.AFRICA, 73, -78);
-	regions[25] = new MapRegion(manager.get("map/af3.png"), 25, MapRegion.AFRICA, 123, -239);
-	regions[26] = new MapRegion(manager.get("map/af4.png"), 26, MapRegion.AFRICA, 73, -225);
-	regions[27] = new MapRegion(manager.get("map/af5.png"), 27, MapRegion.AFRICA, 81, -319);
-	regions[28] = new MapRegion(manager.get("map/af6.png"), 28, MapRegion.AFRICA, 205, -286);
-
-	regions[29] = new MapRegion(manager.get("map/nam1.png"), 29, MapRegion.N_AMERICA, -150, 108);
-	regions[30] = new MapRegion(manager.get("map/nam2.png"), 30, MapRegion.N_AMERICA, -280, 40);
-	regions[31] = new MapRegion(manager.get("map/nam3.png"), 31, MapRegion.N_AMERICA, -353, 37);
-	regions[32] = new MapRegion(manager.get("map/nam4.png"), 32, MapRegion.N_AMERICA, -452, 113);
-	regions[33] = new MapRegion(manager.get("map/nam5.png"), 33, MapRegion.N_AMERICA, -538, 93);
-	regions[34] = new MapRegion(manager.get("map/nam6.png"), 34, MapRegion.N_AMERICA, -448, 66);
-	regions[35] = new MapRegion(manager.get("map/nam7.png"), 35, MapRegion.N_AMERICA, -463, -12);
-	regions[36] = new MapRegion(manager.get("map/nam8.png"), 36, MapRegion.N_AMERICA, -415, -40);
-	regions[37] = new MapRegion(manager.get("map/nam9.png"), 37, MapRegion.N_AMERICA, -452, -122);
-
-	regions[38] = new MapRegion(manager.get("map/sam1.png"), 38, MapRegion.S_AMERICA, -323, -177);
-	regions[39] = new MapRegion(manager.get("map/sam2.png"), 39, MapRegion.S_AMERICA, -332, -282);
-	regions[40] = new MapRegion(manager.get("map/sam3.png"), 40, MapRegion.S_AMERICA, -298, -308);
-	regions[41] = new MapRegion(manager.get("map/sam4.png"), 41, MapRegion.S_AMERICA, -283, -405);
+	map.regions
+	    .forEach(region ->
+		region.provinces.forEach(province ->
+		    regions[province.id] = new MapRegion(
+			manager.get("map/" + map.name + "/" + province.texture),
+			province.id, region.id,
+			province.offset_x,
+			province.offset_y
+		    )
+		)
+	    );
 
 	for (MapRegion region : regions) {
 	    stage.addActor(region);
@@ -200,7 +173,6 @@ public class Play implements Screen {
 	    });
 	}
     }
-
 
 
     private void drawHUD() {
@@ -380,16 +352,12 @@ public class Play implements Screen {
 	Gdx.input.setInputProcessor(multiplexer);
 
 	ContinentIncome ci = new ContinentIncome();
-	ci.addIncome(Province.EUROPE, 5);
-	ci.addIncome(Province.ASIA, 7);
-	ci.addIncome(Province.N_AMERICA, 5);
-	ci.addIncome(Province.AFRICA, 3);
-	ci.addIncome(Province.OCEANIA, 2);
-	ci.addIncome(Province.S_AMERICA, 2);
+	map.regions.forEach(region ->
+	    ci.addIncome(region.id, region.income)
+	);
 
 	createGraph();
 	risk = new Risk(provinces, ci);
-	risk.setBorders(new DefaultBorderSetter());
 
 	drawMap();
 
@@ -569,7 +537,7 @@ public class Play implements Screen {
     }
 
     private void nextTurnButtonClicked() {
-	if (!risk.hasEnded() && !autoPlayThread.isAlive()) {
+	if (!risk.hasEnded() && (autoPlayThread == null || !autoPlayThread.isAlive())) {
 	    playNextTurnSound();
 	    nextTurn();
 	}
