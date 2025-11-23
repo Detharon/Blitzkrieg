@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.blitzkrieg.core.Blitzkrieg;
-import com.dth.blitzkrieg.managers.LanguageManager;
+import com.dth.blitzkrieg.managers.LanguageBundle;
 import com.dth.blitzkrieg.managers.SkinManager;
 import com.dth.blitzkrieg.managers.SoundManager;
 
@@ -33,7 +33,7 @@ public class About implements Screen {
     public About(Blitzkrieg game) {
 	this.game = game;
 	var preferences = game.getPreferences();
-	this.localization = new LanguageManager().loadBundle(preferences.getLanguage());
+	this.localization = new LanguageBundle().load(preferences.getLanguage());
     }
 
     @Override

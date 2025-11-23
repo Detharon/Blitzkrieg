@@ -22,7 +22,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dth.blitzkrieg.core.Blitzkrieg;
 import com.dth.blitzkrieg.core.RiskPreferences;
-import com.dth.blitzkrieg.managers.LanguageManager;
+import com.dth.blitzkrieg.core.i18n.Languages;
+import com.dth.blitzkrieg.managers.LanguageBundle;
 import com.dth.blitzkrieg.managers.SkinManager;
 import com.dth.blitzkrieg.managers.SoundManager;
 
@@ -60,13 +61,13 @@ public class Options implements Screen {
     private TextButton buttonSave, buttonReturn;
 
     // Localization
-    private final LanguageManager languageManager = new LanguageManager();
+    private final LanguageBundle languageBundle = new LanguageBundle();
     private I18NBundle localization;
 
     public Options(Blitzkrieg game) {
 	this.game = game;
 	this.prefs = game.getPreferences();
-	this.localization = languageManager.loadBundle(prefs.getLanguage());
+	this.localization = languageBundle.load(prefs.getLanguage());
 	setPlayerTypes();
     }
 
@@ -178,7 +179,7 @@ public class Options implements Screen {
 	languageLabel = new Label(localization.get("language") + ":", skin);
 	table.add(languageLabel).padRight(15).left();
 	languageSelector = new SelectBox<>(skin);
-	languageSelector.setItems(LanguageManager.LANGUAGES);
+	languageSelector.setItems(Languages.getDisplayNames());
 	languageSelector.addListener(new ChangeListener() {
 	    @Override
 	    public void changed(ChangeEvent event, Actor actor) {
@@ -289,7 +290,7 @@ public class Options implements Screen {
     // =========================
 
     private void languageChanged() {
-	localization = languageManager.loadBundle(languageSelector.getSelected());
+	localization = languageBundle.load(languageSelector.getSelected());
 	optionLabel.setText(localization.get("options"));
 	player1Label.setText(localization.format("player", "1"));
 	player2Label.setText(localization.format("player", "2"));

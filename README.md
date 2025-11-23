@@ -32,7 +32,7 @@ project has proper docs.
 
 ## Planned features
 
-- Russian & Spanish translation
+- Spanish translation
 - Map encoded as a JSON
 - More than one map
 - Play against AI

@@ -82,7 +82,7 @@ public class Play implements Screen {
 	this.hud = new Stage(hudViewport);
 
 	this.game = game;
-	this.localization = new LanguageManager().loadBundle(game.getPreferences().getLanguage());
+	this.localization = new LanguageBundle().load(game.getPreferences().getLanguage());
 	this.screenCamera = screenCamera;
     }
 
