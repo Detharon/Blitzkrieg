@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import java.util.Locale;
 
 public class LanguageManager {
-    public static final String[] LANGUAGES = {"English", "Polski"};
+    public static final String[] LANGUAGES = {"English", "Polski", "Русский"};
 
     private final AssetManager assetManager = new AssetManager();
     private final String bundle = "i18n/Blitzkrieg";
@@ -17,6 +17,7 @@ public class LanguageManager {
     public I18NBundle loadBundle(String language) {
 	return switch (language) {
 	    case "Polski" -> load("pl");
+	    case "Русский" -> load("ru");
 	    default -> load("en");
 	};
     }

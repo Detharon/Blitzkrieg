@@ -15,6 +15,7 @@ it's just a testbed. There's no way to play it yourself, you can only watch the 
 Blitzkrieg is available in the following languages:
 - English (default)
 - Polish
+- Russian
 
 ## Project structure 
 
