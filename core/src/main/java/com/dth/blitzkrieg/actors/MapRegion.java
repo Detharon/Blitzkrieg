@@ -10,13 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Disposable;
 
 public class MapRegion extends Actor implements Disposable {
-    public static int EUROPE = 0;
-    public static int AFRICA = 1;
-    public static int ASIA = 2;
-    public static int OCEANIA = 3;
-    public static int N_AMERICA = 4;
-    public static int S_AMERICA = 5;
-
     private int id;
 
     private int region;
