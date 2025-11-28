@@ -26,10 +26,6 @@ public class Risk {
 	end = false;
     }
 
-    public void setBorders(BorderSetter bs) {
-	bs.setBorders(provinces);
-    }
-
     public void nextTurn() {
 	if (isGameOver()) return;
 	System.gc();
