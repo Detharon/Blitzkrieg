@@ -61,8 +61,8 @@ public class ZoomProcessor extends InputAdapter {
     }
 
     @Override
-    public boolean scrolled(int amount) {
-	currentZoom *= (amount < 0) ? 1.10f : 0.90f;
+    public boolean scrolled(float amountX, float amountY) {
+	currentZoom *= (amountY < 0) ? 1.10f : 0.90f;
 	currentZoom = Math.clamp(currentZoom, MIN_ZOOM, MAX_ZOOM);
 
 	cam.zoom = 100f / currentZoom;
