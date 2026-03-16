@@ -1,6 +1,5 @@
 package com.dth.blitzkrieg.gamestates;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,10 +20,10 @@ import com.dth.blitzkrieg.managers.SkinManager;
 import com.dth.blitzkrieg.managers.SoundManager;
 
 public class About implements Screen {
-    private Viewport viewport = new ScreenViewport();
-    private Stage stage = new Stage(viewport);
-    private Table table = new Table();
-    private Blitzkrieg game;
+    private final Viewport viewport = new ScreenViewport();
+    private final Stage stage = new Stage(viewport);
+    private final Table table = new Table();
+    private final Blitzkrieg game;
 
     private final Skin skin = SkinManager.loadUISkin();
 
@@ -52,7 +51,7 @@ public class About implements Screen {
 	    @Override
 	    public void clicked(InputEvent event, float x, float y) {
 		SoundManager.play("click");
-		((Game) Gdx.app.getApplicationListener()).setScreen(new Menu(game));
+		game.setScreen(new Menu(game));
 	    }
 	});
 	window.add(buttonExit).row();
@@ -80,23 +79,20 @@ public class About implements Screen {
     @Override
     public void pause() {
 	// TODO Auto-generated method stub
-
     }
 
     @Override
     public void resume() {
 	// TODO Auto-generated method stub
-
     }
 
     @Override
     public void hide() {
 	// TODO Auto-generated method stub
-
     }
 
     @Override
     public void dispose() {
-	// TODO Auto-generated method stub
+	stage.dispose();
     }
 }
